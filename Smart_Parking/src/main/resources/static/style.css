@@ -1,0 +1,113 @@
+h3.active {
+    color: gray;
+}
+
+h3.viol {
+    color: red;
+}
+
+h3.free {
+    color: green;
+}
+
+
+/*body {*/
+/*    background-image: url("/img/bg.jpg");*/
+/*    !* Half height *!*/
+
+/*    !* Center and scale the image nicely *!*/
+/*    background-position: center;*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: cover;*/
+/*}*/
+
+/*background: url('https://images.unsplash.com/photo-1508796079212-a4b83cbf734d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;*/
+/*https://images.unsplash.com/photo-1508614999368-9260051292e5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80*/
+
+
+body {
+    background: url("/img/bg.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+body label {
+font-size: 18px;
+}
+
+div .dataTables_filter label {
+    border-radius: 15px;
+    font-size: 18px;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+}
+
+div .dataTables_length label {
+    border-radius: 15px;
+    font-size: 18px;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+}
+
+div .dataTables_info  {
+    display:inline-block;
+    border-radius: 15px;
+    font-size: 16px;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+}
+
+div .dataTables_paginate ul li {
+    background-color: #343a40 !important;
+    color: white !important;
+}
+
+div .dataTables_paginate ul li a {
+    background-color: #343a40 !important;
+    color: white !important;
+}
+
+.container-fluid form {
+    background-color: #22272b !important;
+    color: white !important;
+    border-radius: 15px;
+    font-size: 16px;
+    padding: 20px;
+}
+
+.container {
+    background-color: #22272b !important;
+    color: white !important;
+}
+
+.card {
+    background-color: #22272b;
+}
+.parent {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.img-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.img-container img {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 20%;
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}
