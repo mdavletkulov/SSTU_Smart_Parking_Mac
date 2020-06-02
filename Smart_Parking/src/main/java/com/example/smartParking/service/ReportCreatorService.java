@@ -35,7 +35,7 @@ public class ReportCreatorService {
     Environment environment;
 
 
-    public boolean createDocxReport(List<ReportEntity> reportEntities, HttpServletResponse response, Model model) {
+    public boolean createDocxReport(List<ReportEntity> reportEntities, Model model) {
         try {
             // создаем модель docx документа,
             // к которой будем прикручивать наполнение (колонтитулы, текст)

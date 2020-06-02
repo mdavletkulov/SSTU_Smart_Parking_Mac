@@ -112,7 +112,7 @@ public class ReportController {
     }
 
     @PostMapping(value = "common")
-    public String createCommonReport(HttpServletResponse response, Model model,
+    public String createCommonReport(Model model,
                                      @RequestParam(required = false) String typesJob,
                                      @RequestParam(required = false) String division,
                                      @RequestParam(required = false) String subdivision,
@@ -131,7 +131,7 @@ public class ReportController {
             boolean employeePresent = reportService.checkEmployee(student, employee);
             List<Event> events = reportService.findCommonEvents(typesJob, division, subdivision, startTime,
                     endTime, studentPresent, employeePresent, onlyViolation);
-            reportService.createReport(events, model, response);
+            reportService.createReport(events, model);
         }
         if (onlyViolation) return getCommonViolationReports(model);
         else return "report/commonReport";
@@ -165,8 +165,7 @@ public class ReportController {
     }
 
     @PostMapping("simple")
-    public String createSimpleReport(HttpServletResponse response,
-                                     @RequestParam String startTime,
+    public String createSimpleReport(@RequestParam String startTime,
                                      @RequestParam String endTime,
                                      @RequestParam(required = false) String personId,
                                      Model model) throws IOException {
@@ -177,7 +176,7 @@ public class ReportController {
             else return "report/reportSimple";
         }
         List<Event> events = reportService.findSimpleEvents(startTime, endTime, personId);
-        reportService.createReport(events, model, response);
+        reportService.createReport(events, model);
         if (personIdPresent) return createPersonReport(Long.valueOf(personId), model);
         else return "report/reportSimple";
     }

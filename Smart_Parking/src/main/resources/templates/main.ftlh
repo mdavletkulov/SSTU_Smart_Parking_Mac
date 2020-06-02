@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Carousel Template for Bootstrap</title>
+    <title>Smart Parking</title>
     <base href="/">
     <!-- Bootstrap core CSS -->
     <script type="text/javascript"

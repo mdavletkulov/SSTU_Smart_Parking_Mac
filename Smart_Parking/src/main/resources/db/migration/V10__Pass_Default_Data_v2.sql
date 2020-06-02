@@ -39,15 +39,33 @@ values (N'Промышленная теплотехника', 1),
        (N'Иностранные языки и профессиональная коммуникация', 7);
 
 insert into person(course, employee, first_name, second_name, middle_name, group_name, pass_end_date,
-                   pass_num,  special_status, student, job_position, subdivision, division)
+                   pass_num, special_status, student, job_position, subdivision, division)
 values (4, 0, N'Максим', N'Давлеткулов', N'Артурович', N'б2-ПИНФ41', null, null, 0, 1, null, 16, 4),
        (null, 1, N'Ольга', N'Долинина', N'Николаевна', null, DATEADD(month, 6, current_timestamp), 1, 0, 0, 2, 16, 4),
-       (null, 1, N'Иван', N'Иванов', N'Иванович', null, DATEADD(month, 4, current_timestamp), 2, 1, 0, 6, null, null);
+       (null, 1, N'Иван', N'Иванов', N'Иванович', null, DATEADD(month, 4, current_timestamp), 2, 1, 0, 6, null, null),
+       (null, 0, N'Федор', N'Федоров', N'Федорович', N'б1-ТПЭН31', null, null, 0, 1, null, 1, 1),
+       (null, 1, N'Петр', N'Петров', N'Петрович', null, DATEADD(month, 4, current_timestamp), 3, 1, 0, 5, 2, 1),
+       (null, 1, N'Сидор', N'Сидоров', N'Сидорович', null, DATEADD(month, 4, current_timestamp), 4, 0, 0, 7, null,
+        null),
+       (null, 0, N'Максим', N'Максимов', N'Максимович', N'б2-ЭЛЭТ31', null, null, 0, 1, null, 3, 1),
+       (null, 1, N'Андрей', N'Андреев', N'Андреевич', null, DATEADD(month, 4, current_timestamp), 5, 0, 0, 4, 19, 5),
+       (null, 1, N'Артем', N'Артемов', N'Артемович', null, DATEADD(month, 6, current_timestamp), 6, 0, 0, 8, null,
+        null);
+
 
 insert into automobile(model, number, color_id, person_id)
-values ('Mercedes Benz', 'T290KB125', 3, 1),
-       ('Mercedes E-Class', 'H757YC33', 2, 2),
-       ('Lexus ES 250', 'T222YY777', 3, 3);
+values ('Chevrolet Aveo', 'B008AK164', 3, 1),
+       ('Audi A3', 'A111AA164', 2, 2),
+       ('Lexus ES 250', 'B222BB164', 3, 3),
+       ('Lada Priora', 'X432CC64', 3, 4),
+       ('Volkswagen Polo', 'T534MO64', 5, 5),
+       (null, 'T061OC64', null, null),
+       ('Chevrolet Lanos', 'O828PY64', 9, 7),
+       ('Lada Largus', 'T183XM64', 3, 8),
+       (null, 'H380HP64', null, null),
+       ('Hyundai Santa Fe', 'B717TK64', 5, 9),
+       (null, 'O330XO64', null, null);
+
 
 insert into parking_place(place_number, parking_id, special_status)
 values (1, 1, 1),

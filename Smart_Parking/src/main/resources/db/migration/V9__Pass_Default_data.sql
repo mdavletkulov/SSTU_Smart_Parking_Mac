@@ -15,7 +15,8 @@ values (N'Красный'),
        (N'Черный'),
        (N'Желтый'),
        (N'Коричневый'),
-       (N'Оранжевый');
+       (N'Оранжевый'),
+       (N'Зеленый');
 
 insert into job_position(name_position, type_job_position)
 values (N'Заведующий кафедрой', N'ППС'),

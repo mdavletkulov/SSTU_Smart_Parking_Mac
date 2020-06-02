@@ -44,8 +44,7 @@ public class ParkingService {
     @Value("${upload.img.path}")
     private String uploadPath;
 
-    public void processPollEvent(String resultFileName, Long parkingId) {
-        List<String> autoNums = checkAndProcessImage(resultFileName);
+    public void processPollEvent(String resultFileName, List<String> autoNums, Long parkingId) {
         if (autoNums != null && autoNums.isEmpty()) {
             processEmptyParking(parkingId);
         } else if (autoNums != null) {
@@ -55,7 +54,7 @@ public class ParkingService {
         file.delete();
     }
 
-    private List<String> checkAndProcessImage(String resultFileName) {
+    List<String> checkAndProcessImage(String resultFileName) {
         if (resultFileName != null && !resultFileName.isBlank()) {
             return processImage(resultFileName);
         }

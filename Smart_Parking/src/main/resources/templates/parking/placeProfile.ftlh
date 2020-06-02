@@ -24,7 +24,11 @@
             <#if automobile.getModel()??>
                 <tr class="d-flex">
                     <th scope="row">Автомобиль</th>
+                    <#if automobile.getColor()??>
                     <td>${automobile.getInfo()}</td>
+                        <#else>
+                            <td>${automobile.getModel()}</td>
+                    </#if>
                 </tr>
             </#if>
         </#if>

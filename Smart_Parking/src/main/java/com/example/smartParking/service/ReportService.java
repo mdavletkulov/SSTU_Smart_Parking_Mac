@@ -89,10 +89,10 @@ public class ReportService {
         return reportEntities;
     }
 
-    public void createReport(List<Event> events, Model model, HttpServletResponse response) {
+    public void createReport(List<Event> events, Model model) {
         if (!events.isEmpty()) {
             List<ReportEntity> reportEntities = createReportEntities(events);
-            boolean reportSaved = reportCreatorService.createDocxReport(reportEntities, response, model);
+            boolean reportSaved = reportCreatorService.createDocxReport(reportEntities, model);
             if (reportSaved) {
                 model.addAttribute("messageType", "success");
                 model.addAttribute("message", "Отчет успешно сохранен");
@@ -149,14 +149,19 @@ public class ReportService {
                 if (violation) events = findOnlyViolation(events);
             } else {
                 events = eventRepo.findAllParkingBetweenDates(startDateTime, endDateTime);
-                if (violation) events = findOnlyViolation(events);
+                if (violation) events = findOnlyViolationCommon(events);
             }
         }
         return events;
     }
 
     private List<Event> findOnlyViolation(List<Event> events) {
-        return events.stream().filter(event -> event.isPassViolation() || event.isSpecialStatusViolation())
+        return events.stream().filter(Event::isPassViolation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Event> findOnlyViolationCommon(List<Event> events) {
+        return events.stream().filter(event -> event.getPersonViolation() || event.getAutoViolation() || event.getPassNumViolation())
                 .collect(Collectors.toList());
     }
 
