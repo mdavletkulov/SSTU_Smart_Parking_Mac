@@ -75,7 +75,7 @@ public class ReportService {
                 reportEntity.setSubdivision(person.getSubdivision().getName());
             }
             if (person.getJobPosition() != null) reportEntity.setJobPosition(person.getJobPosition().getNamePosition());
-            if (event.getPassNumViolation()) reportEntity.setPassViolation("Пропуск просрочен или не существует!");
+            if (event.getPassNumViolation()) reportEntity.setPassViolation("Пропуск просрочен или не действителен!");
             if (event.getAutoViolation()) {
                 reportEntity.setAutoViolation("Неизвестный автомобиль!");
             }

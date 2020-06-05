@@ -24,10 +24,17 @@
         <#list persons as person>
             <tr>
                 <th class="align-middle">${person.getFullName()}</th>
+                <#assign hasPerson = 0>
                 <#list automobiles as auto>
-                    <#if auto.getPerson().getId() == person.getId()><td class="align-middle">${auto.getModel()} </td></#if>
-                    <#if auto.getPerson().getId() == person.getId()><td class="align-middle">${auto.getNumber()} </td></#if>
+                    <#if auto.getPerson()??>
+                    <#if auto.getPerson().getId() == person.getId()><#assign hasPerson = 1><td class="align-middle">${auto.getModel()} </td></#if>
+                    <#if auto.getPerson().getId() == person.getId()><#assign hasPerson = 1><td class="align-middle">${auto.getNumber()} </td></#if>
+                    </#if>
                 </#list>
+                <#if hasPerson = 0>
+                    <td class="align-middle">&#x2716;</td>
+                    <td class="align-middle">&#x2716;</td>
+                </#if>
                 <td class="align-middle"><#if person.isStudent()>Студент</#if> <#if person.isEmployee()>Сотрудник</#if></td>
                 <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getTypeJobPosition()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getNamePosition()}<#else>&#x2716;</#if></td>

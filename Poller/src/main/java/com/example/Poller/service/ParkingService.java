@@ -17,9 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,28 +42,49 @@ public class ParkingService {
     @Value("${upload.img.path}")
     private String uploadPath;
 
-    public void processPollEvent(String resultFileName, List<String> autoNums, Long parkingId) {
-        if (autoNums != null && autoNums.isEmpty()) {
-            processEmptyParking(parkingId);
-        } else if (autoNums != null) {
-            processAutoEvents(autoNums, parkingId);
+    public void deleteLastDateEvents(Long parkingId) {
+        List<Event> events = eventRepo.getOldEventsWithPhotos(parkingId);
+        for (Event event : events) {
+            String fileName = event.getPhotoName();
+            File file = new File(uploadPath + "/autos/" + fileName);
+            if (file.delete()) {
+                event.setPhotoName(null);
+                eventRepo.save(event);
+            }
         }
+    }
+
+    public void processPollEvent(String resultFileName, HashMap<Integer, Map<List<String>, String>> placeNumbers, Long parkingId) {
+        placeNumbers.entrySet().stream()
+                .map(x -> {
+                    x.getValue().keySet().stream()
+                            .map(numbers -> {
+                                if (numbers != null && numbers.isEmpty()) {
+                                    processEmptyParking(parkingId);
+                                } else if (numbers != null) {
+                                    processAutoEvents(placeNumbers, parkingId);
+                                }
+                                return this;
+                            });
+                    return this;
+                });
+
         File file = new File(uploadPath + "/autos/" + resultFileName);
         file.delete();
     }
 
     List<String> checkAndProcessImage(String resultFileName) {
-        if (resultFileName != null && !resultFileName.isBlank()) {
-            return processImage(resultFileName);
-        }
-        return null;
+//        if (resultFileName != null && !resultFileName.isBlank()) {
+//            return processImage(resultFileName);
+//        }
+        return Collections.emptyList();
     }
 
-    private void processAutoEvents(List<String> autoNums, Long parkingId) {
-        removePastEvents(autoNums, parkingId);
-        List<Event> activeEvents = eventRepo.findActiveParkingEvent(parkingId);
-        getOnlyNewEvents(autoNums, activeEvents);
-        sortAndCreateEvents(autoNums, parkingId);
+    private void processAutoEvents(HashMap<Integer, Map<List<String>, String>> placeNumbers, Long parkingId) {
+//        removePastEvents(autoNums, parkingId);
+//        List<Event> activeEvents = eventRepo.findActiveParkingEvent(parkingId);
+//        getOnlyNewEvents(autoNums, activeEvents);
+//        sortAndCreateEvents(autoNums, parkingId);
     }
 
     private void processEmptyParking(Long parkingId) {

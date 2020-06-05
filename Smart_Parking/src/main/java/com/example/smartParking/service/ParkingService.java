@@ -54,6 +54,7 @@ public class ParkingService {
         attributes.put("personViolation", event.getPersonViolation());
         attributes.put("autoViolation", event.getAutoViolation());
         attributes.put("parkingEvent", event);
+        attributes.put("imgName", event.getPhotoName());
         return attributes;
     }
 

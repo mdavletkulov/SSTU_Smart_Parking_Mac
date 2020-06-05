@@ -6,6 +6,7 @@
     </div>
     <h4>${parkingName}</h4>
     <h5 class="mt-3">Парковочное место номер ${placeNum}</h5>
+    <div class="row">
     <table class="table table-borderless table-striped col-4 table-hover table-dark">
         <thead>
         <tr class="d-flex">
@@ -95,7 +96,7 @@
             <#else>
                 <tr class="d-flex bg-danger">
                     <th scope="row" class="bg-danger">Пропуск</th>
-                    <td class="bg-danger">Пропуска нет или он просрочен!</td>
+                    <td class="bg-danger">Пропуск просрочен или не действителен!</td>
                 </tr>
             </#if>
         </#if>
@@ -116,4 +117,11 @@
         </#if>
         </tbody>
     </table>
+        <#if imgName?? && !automobile??>
+            <div class="col-4 ml-5">
+                <img src="/img/autos/${imgName}" class="card-img-top img-fluid" style="height: 20rem">
+            </div>
+        </#if>
+
+    </div>
 </@c.page>

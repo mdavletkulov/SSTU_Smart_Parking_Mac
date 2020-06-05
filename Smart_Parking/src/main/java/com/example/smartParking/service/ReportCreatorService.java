@@ -91,8 +91,8 @@ public class ReportCreatorService {
         if (reportEntity.getPlaceNum() != null) placeNum = reportEntity.getPlaceNum().toString();
         String autoNum = reportEntity.getAutoNum();
         String personName = reportEntity.getPersonName();
-        String startTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(reportEntity.getStartTime());
-        String endTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(reportEntity.getEndTime());
+        String startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reportEntity.getStartTime());
+        String endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reportEntity.getEndTime());
         String division = reportEntity.getDivision();
         String subdivision = reportEntity.getSubdivision();
         String jobPosition = reportEntity.getJobPosition();

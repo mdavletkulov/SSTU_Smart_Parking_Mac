@@ -14,9 +14,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.util.*;
 
 @Service
 public class PollerService {
@@ -39,7 +38,9 @@ public class PollerService {
 
     public void processSnapshot() throws IOException {
         String resultFileName;
+        HashMap<Integer, Map<List<String>, String>> placeNumbers = new HashMap<>();
 
+        parkingService.deleteLastDateEvents(parkingId);
         String uri = snapshotAddress;
         ResponseEntity<byte[]> img = restTemplate.exchange(uri, HttpMethod.GET, null, byte[].class);
         if (img.getBody() != null) {
@@ -52,24 +53,39 @@ public class PollerService {
             os.write(img.getBody());
             os.close();
             File file1 = new File(uploadPath + "/autos/" + resultFileName);
-            BufferedImage originalImgage = ImageIO.read(file1);
-            BufferedImage subImgage = originalImgage.getSubimage(350, 700, 730, 500);
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName ));
-            fileNames.add(resultFileName);
-            BufferedImage subImgage1 = originalImgage.getSubimage(1080, 700, 660, 500);
+            BufferedImage originalImage = ImageIO.read(file1);
+
             uuidFile = UUID.randomUUID().toString();
             String resultFileName1 = uuidFile + ".jpg";
-            ImageIO.write(subImgage1, "jpg", new File(uploadPath + "/autos/" + resultFileName1 ));
-            fileNames.add(resultFileName1);
-            BufferedImage subImgage2 = originalImgage.getSubimage(1680, 700, 900, 500);
+            BufferedImage subImgage = originalImage.getSubimage(350, 700, 570, 500);
+            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+            placeNumbers.put(1, Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+
+            subImgage = originalImage.getSubimage(810, 700, 450, 500);
             uuidFile = UUID.randomUUID().toString();
-            String resultFileName2 = uuidFile + ".jpg";
-            ImageIO.write(subImgage2, "jpg", new File(uploadPath + "/autos/" + resultFileName2 ));
-            fileNames.add(resultFileName2);
-            for (String fileName : fileNames) {
-                numbers.addAll(parkingService.checkAndProcessImage(fileName));
-            }
-            parkingService.processPollEvent(resultFileName, numbers, parkingId);
+            resultFileName1 = uuidFile + ".jpg";
+            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+            placeNumbers.put(2,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+
+            subImgage = originalImage.getSubimage(1180, 700, 480, 500);
+            uuidFile = UUID.randomUUID().toString();
+            resultFileName1 = uuidFile + ".jpg";
+            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+            placeNumbers.put(3,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+
+            subImgage = originalImage.getSubimage(1600, 800, 540, 500);
+            uuidFile = UUID.randomUUID().toString();
+            resultFileName1 = uuidFile + ".jpg";
+            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+            placeNumbers.put(4,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+
+            subImgage = originalImage.getSubimage(2000, 800, 600, 600);
+            uuidFile = UUID.randomUUID().toString();
+            resultFileName1 = uuidFile + ".jpg";
+            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+            placeNumbers.put(5,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+
+            parkingService.processPollEvent(resultFileName1, placeNumbers, parkingId);
         }
     }
 }

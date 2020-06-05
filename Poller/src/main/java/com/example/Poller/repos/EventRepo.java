@@ -11,6 +11,12 @@ import java.util.Optional;
 public interface EventRepo extends CrudRepository<Event, Long> {
 
     @Query(
+            value = "Select * FROM parking_event LEFT JOIN parking_place pp on parking_event.place_id = pp.id " +
+                    "WHERE parking_id = ?1 and end_time IS NOT NULL and DATEADD(day, 1, start_time) < current_timestamp",
+            nativeQuery = true)
+    List<Event> getOldEventsWithPhotos(Long parkingId);
+
+    @Query(
             value = "Select * FROM parking_event WHERE place_id = ?1 and end_time IS NULL",
             nativeQuery = true)
     Optional<Event> findActivePlaceEvent(Long parkingPlaceId);
