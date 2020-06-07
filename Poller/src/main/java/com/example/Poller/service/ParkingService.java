@@ -55,9 +55,9 @@ public class ParkingService {
     }
 
     public void processPollEvent(String resultFileName, HashMap<Integer, Map<List<String>, String>> placeNumbers, Long parkingId) {
-        placeNumbers.entrySet().stream()
-                .map(x -> {
-                    x.getValue().keySet().stream()
+        placeNumbers.values().stream()
+                .map(listStringMap -> {
+                    listStringMap.keySet().stream()
                             .map(numbers -> {
                                 if (numbers != null && numbers.isEmpty()) {
                                     processEmptyParking(parkingId);
@@ -74,9 +74,9 @@ public class ParkingService {
     }
 
     List<String> checkAndProcessImage(String resultFileName) {
-//        if (resultFileName != null && !resultFileName.isBlank()) {
-//            return processImage(resultFileName);
-//        }
+        if (resultFileName != null && !resultFileName.isBlank()) {
+            return processImage(resultFileName);
+        }
         return Collections.emptyList();
     }
 
