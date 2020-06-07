@@ -22,7 +22,7 @@ public class Application {
     public void init() throws InterruptedException, IOException {
          while (true) {
              pollerService.processSnapshot();
-             Thread.sleep(25000);
+             Thread.sleep(20000);
          }
     }
 }

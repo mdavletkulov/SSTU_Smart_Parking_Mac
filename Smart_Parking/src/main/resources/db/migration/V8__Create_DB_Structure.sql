@@ -1,8 +1,8 @@
 create table automobile
 (
     id        bigint identity not null,
-    model     varchar(50),
-    number    varchar(12),
+    model     nvarchar(50),
+    number    nvarchar(12),
     color_id  bigint,
     person_id bigint,
     primary key (id)
@@ -11,21 +11,21 @@ create table automobile
 create table color
 (
     id   bigint  identity not null,
-    name varchar(255) not null,
+    name nvarchar(255) not null,
     primary key (id)
 )
 
 create table division
 (
     id   bigint identity not null,
-    name varchar(30) not null,
+    name nvarchar(30) not null,
     primary key (id)
 )
 
 create table job_position
 (
     id                bigint identity not null,
-    name_position     varchar(60)  not null,
+    name_position     nvarchar(60)  not null,
     type_job_position varchar(255) not null,
     primary key (id)
 )
@@ -33,7 +33,7 @@ create table job_position
 create table parking
 (
     id           bigint identity not null,
-    description  varchar(150),
+    description  nvarchar(150),
     image_name varchar(255),
     primary key (id)
 )
@@ -67,12 +67,12 @@ create table person
     id             bigint identity not null,
     course         int,
     employee       bit         not null,
-    first_name     varchar(60) not null,
-    group_name     varchar(10),
-    middle_name    varchar(60),
+    first_name     nvarchar(60) not null,
+    group_name     nvarchar(10),
+    middle_name    nvarchar(60),
     pass_end_date  datetime2,
     pass_num       int,
-    second_name    varchar(60),
+    second_name    nvarchar(60),
     special_status bit         not null,
     student        bit         not null,
     job_position   bigint,
@@ -84,7 +84,7 @@ create table person
 create table subdivision
 (
     id          bigint identity not null,
-    name        varchar(100) not null,
+    name        nvarchar(100) not null,
     division_id bigint,
     primary key (id)
 )

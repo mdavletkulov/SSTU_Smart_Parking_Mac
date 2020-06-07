@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DataEditingService {
@@ -559,7 +556,13 @@ public class DataEditingService {
     }
 
     public List<String> getTypeJobs() {
-        return jobPositionRepo.findAllPositionNames();
+        List<String> list = new ArrayList<>();
+        List<TypeJobPosition> list1 = new ArrayList<>();
+        list1.addAll(jobPositionRepo.findAllPositionNames());
+        for (TypeJobPosition jobPosition: list1) {
+            list.add(jobPosition.getType());
+        }
+        return list;
     }
 
     public void deleteJob(Long jobId, Model model) {
@@ -582,7 +585,7 @@ public class DataEditingService {
 
     }
 
-    public boolean addJob(JobPosition jobPosition, BindingResult bindingResult, Model model) {
+    public boolean addJob(JobPosition jobPosition, Model model) {
         Optional<JobPosition> jobFromDB = jobPositionRepo.findByNamePosition(jobPosition.getNamePosition());
 
         if (jobFromDB.isPresent()) {
@@ -590,9 +593,9 @@ public class DataEditingService {
             model.addAttribute("message", "Такая должность уже существует");
             return false;
         }
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
-            model.mergeAttributes(errors);
+        if (jobPosition.getNamePosition() == null || jobPosition.getNamePosition().isBlank()) {
+            model.addAttribute("messageType", "danger");
+            model.addAttribute("message", "Название должности не может быть пустой");
             return false;
         }
         jobPositionRepo.save(jobPosition);
@@ -601,17 +604,18 @@ public class DataEditingService {
         return true;
     }
 
-    public boolean updateJob(Long jobId, JobPosition jobPositionChange, BindingResult
-            bindingResult, Model model) {
+    public boolean updateJob(Long jobId, JobPosition jobPositionChange, Model model) {
         Optional<JobPosition> jobDB = jobPositionRepo.findById(jobId);
         boolean success = true;
         if (jobDB.isPresent()) {
             JobPosition jobPosition = jobDB.get();
-            if (ControllerUtils.hasError(model, bindingResult)) {
+            if (jobPositionChange.getNamePosition() == null || jobPositionChange.getNamePosition().isBlank()) {
+                model.addAttribute("messageType", "danger");
+                model.addAttribute("message", "Название должности не может быть пустой");
                 success = false;
             } else {
                 jobPosition.setNamePosition(jobPositionChange.getNamePosition());
-                jobPosition.setTypeJobPosition(TypeJobPosition.valueOf(jobPositionChange.getTypeJobPosition()));
+                jobPosition.setTypeJobPosition(jobPositionChange.getTypeJobPositionEn());
                 jobPositionRepo.save(jobPosition);
             }
         } else {

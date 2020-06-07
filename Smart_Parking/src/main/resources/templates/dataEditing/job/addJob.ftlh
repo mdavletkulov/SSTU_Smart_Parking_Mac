@@ -15,8 +15,8 @@
     <form action="/dataEdit/job/add" method="post" class="mt-2 col-sm-4">
 
         <div class="form-group typeJobPosition">
-            <label class="typeJobPosition" for="typeJobPosition">Подразделение</label>
-            <select class="form-control typeJobPosition" name="typeJobPosition">
+            <label class="typeJobPosition" for="typeJobPosition1">Подразделение</label>
+            <select class="form-control typeJobPosition1" name="typeJobPosition1">
                 <#list typeJobPositions as typeJobPosition>
                     <option>${typeJobPosition}</option>
                 </#list>

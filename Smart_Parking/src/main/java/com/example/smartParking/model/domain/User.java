@@ -1,6 +1,7 @@
 package com.example.smartParking.model.domain;
 
 import com.example.smartParking.validator.ValidPassword;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,14 +22,18 @@ public class User implements UserDetails {
 
     @Email(message = "Некорректный e-mail")
     @NotBlank(message = "Поле email не может быть пустым")
+    @Nationalized
     private String username;
     @NotBlank(message = "Поле имени не может быть пустым")
     @Length(max = 60, message = "Значение имени слишком длинное")
+    @Nationalized
     private String firstName;
     @NotBlank(message = "Поле фамилии не может быть пустым")
     @Length(max = 60, message = "Значение фамилии слишком длинное")
+    @Nationalized
     private String secondName;
     @Length(max = 60, message = "Значение отчества слишком длинное")
+    @Nationalized
     private String middleName;
     @NotBlank(message = "Пароль не может быть пустым")
     @ValidPassword

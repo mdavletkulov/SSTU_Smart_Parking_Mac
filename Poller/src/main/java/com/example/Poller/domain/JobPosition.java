@@ -1,5 +1,6 @@
 package com.example.Poller.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class JobPosition {
     private Long Id;
     @Enumerated(EnumType.STRING)
     private TypeJobPosition typeJobPosition;
+    @Nationalized
     @NotBlank(message = "Название должности не может быть пустой")
     @Length(max = 60, message = "Значение должности слишком длинное")
     private String namePosition;

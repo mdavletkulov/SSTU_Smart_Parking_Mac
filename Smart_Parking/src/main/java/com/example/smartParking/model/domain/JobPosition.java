@@ -1,5 +1,6 @@
 package com.example.smartParking.model.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class JobPosition {
     private Long Id;
     @Enumerated(EnumType.STRING)
     private TypeJobPosition typeJobPosition;
+    @Nationalized
     @NotBlank(message = "Название должности не может быть пустой")
     @Length(max = 60, message = "Значение должности слишком длинное")
     private String namePosition;
@@ -26,7 +28,15 @@ public class JobPosition {
     }
 
     public String getTypeJobPosition() {
-        return typeJobPosition.name();
+        if (typeJobPosition.equals(TypeJobPosition.AUP))
+            return "АУП";
+        else if (typeJobPosition.equals(TypeJobPosition.PPS))
+            return "ППС";
+        return null;
+    }
+
+    public TypeJobPosition getTypeJobPositionEn() {
+        return typeJobPosition;
     }
 
     public void setTypeJobPosition(TypeJobPosition typeJobPosition) {

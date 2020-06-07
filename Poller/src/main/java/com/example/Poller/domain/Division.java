@@ -1,5 +1,6 @@
 package com.example.Poller.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ public class Division {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+    @Nationalized
     @NotBlank(message = "Название института не может быть пустым")
     @Length(max = 30, message = "Название института слишком длинное")
     private String name;

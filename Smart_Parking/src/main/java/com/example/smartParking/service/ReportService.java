@@ -3,6 +3,7 @@ package com.example.smartParking.service;
 import com.example.smartParking.model.ReportEntity;
 import com.example.smartParking.model.domain.Event;
 import com.example.smartParking.model.domain.Person;
+import com.example.smartParking.model.domain.TypeJobPosition;
 import com.example.smartParking.repos.DivisionRepo;
 import com.example.smartParking.repos.EventRepo;
 import com.example.smartParking.repos.JobPositionRepo;
@@ -166,7 +167,13 @@ public class ReportService {
     }
 
     public void addDefaultAttributes(Model model) {
-        model.addAttribute("typesJob", jobPositionRepo.findAllPositionNames());
+        List<String> list = new ArrayList<>();
+        List<TypeJobPosition> list1 = new ArrayList<>();
+        list1.addAll(jobPositionRepo.findAllPositionNames());
+        for (TypeJobPosition jobPosition: list1) {
+            list.add(jobPosition.getType());
+        }
+        model.addAttribute("typesJob", list);
         model.addAttribute("divisions", divisionRepo.findAll());
     }
 

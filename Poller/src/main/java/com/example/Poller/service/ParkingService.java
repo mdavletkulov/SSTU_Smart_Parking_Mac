@@ -1,9 +1,6 @@
 package com.example.Poller.service;
 
-import com.example.Poller.domain.Automobile;
-import com.example.Poller.domain.CarNumberResponse;
-import com.example.Poller.domain.Event;
-import com.example.Poller.domain.Place;
+import com.example.Poller.domain.*;
 import com.example.Poller.repos.AutomobileRepo;
 import com.example.Poller.repos.EventRepo;
 import com.example.Poller.repos.PlaceRepo;
@@ -42,6 +39,8 @@ public class ParkingService {
     @Value("${upload.img.path}")
     private String uploadPath;
 
+    private static final String numFormat = "^[a-z,A-Z]\\d{3}[a-z,A-Z]{2}.*";
+
     public void deleteLastDateEvents(Long parkingId) {
         List<Event> events = eventRepo.getOldEventsWithPhotos(parkingId);
         for (Event event : events) {
@@ -54,21 +53,19 @@ public class ParkingService {
         }
     }
 
-    public void processPollEvent(String resultFileName, HashMap<Integer, Map<List<String>, String>> placeNumbers, Long parkingId) {
-        placeNumbers.values().stream()
-                .map(listStringMap -> {
-                    listStringMap.keySet().stream()
-                            .map(numbers -> {
-                                if (numbers != null && numbers.isEmpty()) {
-                                    processEmptyParking(parkingId);
-                                } else if (numbers != null) {
-                                    processAutoEvents(placeNumbers, parkingId);
-                                }
-                                return this;
-                            });
-                    return this;
-                });
-
+    public void processPollEvent(String resultFileName, List<ParkingNumberEvent> placeNumbers, Long parkingId) {
+        List<String> autoNums = automobileRepo.findAllNums();
+        List<String> noRegionNums = new ArrayList<>();
+        for (String num : autoNums) {
+            noRegionNums.add(num.substring(0, 6));
+        }
+        for (ParkingNumberEvent parkingNumberEvent : placeNumbers) {
+            if (parkingNumberEvent.getNumbers() != null && parkingNumberEvent.getNumbers().isEmpty()) {
+                processEmptyParking(parkingId, parkingNumberEvent.getPlaceNum());
+            } else if (parkingNumberEvent.getNumbers() != null) {
+                processAutoEvents(parkingNumberEvent, parkingId, noRegionNums);
+            }
+        }
         File file = new File(uploadPath + "/autos/" + resultFileName);
         file.delete();
     }
@@ -80,21 +77,81 @@ public class ParkingService {
         return Collections.emptyList();
     }
 
-    private void processAutoEvents(HashMap<Integer, Map<List<String>, String>> placeNumbers, Long parkingId) {
-//        removePastEvents(autoNums, parkingId);
-//        List<Event> activeEvents = eventRepo.findActiveParkingEvent(parkingId);
-//        getOnlyNewEvents(autoNums, activeEvents);
-//        sortAndCreateEvents(autoNums, parkingId);
+    private void processAutoEvents(ParkingNumberEvent parkingNumberEvent, Long parkingId, List<String> noRegionNums) {
+        Map<String, Boolean> readNums = new HashMap<>();
+        readNums = processNumber(parkingNumberEvent.getNumbers(), noRegionNums);
+        String number = null;
+        for (Map.Entry<String, Boolean> num : readNums.entrySet()) {
+            if (num.getValue()) {
+                number = num.getKey();
+                break;
+            }
+        }
+        if (number == null) {
+            processUnknownAuto(parkingNumberEvent, parkingId);
+        } else {
+            processKnownAuto(parkingNumberEvent, number, parkingId);
+        }
     }
 
-    private void processEmptyParking(Long parkingId) {
-        List<Event> activeEvents = eventRepo.findActiveParkingEvent(parkingId);
-        for (Event event : activeEvents) {
+    private void processKnownAuto(ParkingNumberEvent parkingNumberEvent, String number, Long parkingId) {
+        Optional<Event> activePlaceEvent = eventRepo.findActiveParkingEventByPlaceNum(parkingId, parkingNumberEvent.getPlaceNum());
+        Optional<Event> activeAutoEvent = eventRepo.findActiveAutoEvent(number);
+        Optional<Event> activeAutoPlaceEvent = eventRepo.findActiveAutoPlaceEvent(number, parkingId, parkingNumberEvent.getPlaceNum());
+        if (activeAutoPlaceEvent.isPresent()) {
+            return;
+        }
+        if (activePlaceEvent.isPresent()) {
+            Event activeEvent = activePlaceEvent.get();
+            stopEvent(activeEvent);
+        }
+        if (activeAutoEvent.isPresent()) {
+            Event activeEvent = activeAutoEvent.get();
+            stopEvent(activeEvent);
+        }
+        Event event = new Event();
+        Optional<Place> place = placeRepo.findPlace(parkingNumberEvent.getPlaceNum(), parkingId);
+        if (place.isPresent()) {
+            Optional<Automobile> automobile = automobileRepo.findByNumber(number);
+            if (automobile.isPresent()) {
+                Date date = new Date();
+                long time = date.getTime();
+                event.setStartTime(new Timestamp(time));
+                event.setEndTime(null);
+                event.setAutoViolation(false);
+                event.setPhotoName(parkingNumberEvent.getFileName());
+                event.setPlace(place.get());
+                event.setAutomobile(automobile.get());
+                eventRepo.save(event);
+            }
+        }
+    }
+
+    private void processUnknownAuto(ParkingNumberEvent parkingNumberEvent, Long parkingId) {
+        Event event = new Event();
+        Optional<Place> place = placeRepo.findPlace(parkingNumberEvent.getPlaceNum(), parkingId);
+        if (place.isPresent()) {
             Date date = new Date();
             long time = date.getTime();
-            event.setEndTime(new Timestamp(time));
+            event.setStartTime(new Timestamp(time));
+            event.setEndTime(null);
+            event.setAutoViolation(true);
+            event.setPhotoName(parkingNumberEvent.getFileName());
+            event.setPlace(place.get());
             eventRepo.save(event);
         }
+    }
+
+    private void processEmptyParking(Long parkingId, Integer placeNum) {
+        Optional<Event> activeEvent = eventRepo.findActiveParkingEventByPlaceNum(parkingId, placeNum);
+        activeEvent.ifPresent(this::stopEvent);
+    }
+
+    private void stopEvent(Event event) {
+        Date date = new Date();
+        long time = date.getTime();
+        event.setEndTime(new Timestamp(time));
+        eventRepo.save(event);
     }
 
     private void removePastEvents(List<String> autoNums, Long parkingId) {
@@ -174,6 +231,48 @@ public class ParkingService {
     private List<String> processImage(String fileName) {
         ResponseEntity<CarNumberResponse> result = restTemplate.getForEntity(neuralNetworkAddress + "/" + fileName, CarNumberResponse.class);
         return result.getBody().getNumbers();
+    }
+
+    public static HashMap<String, Boolean> processNumber(List<String> dbNumbers, List<String> neuralNumbers) {
+        if (dbNumbers == null || neuralNumbers == null) {
+            throw new IllegalArgumentException("Null arguments passed");
+        }
+
+        HashMap<String, Boolean> result = new HashMap<>();
+        for (String neuralNum : neuralNumbers) {
+            if (neuralNum.length() < 6 || !neuralNum.matches(numFormat)) {
+                continue;
+            }
+            String finalNeuralNum = neuralNum.substring(0, 6).toUpperCase();
+
+            int minHamming = 100;
+            String dbMatched = "";
+            for (String dbNum : dbNumbers) {
+                int currentHamming = hammingDistance(dbNum, finalNeuralNum);
+                if (currentHamming < minHamming) {
+                    minHamming = currentHamming;
+                    dbMatched = dbNum;
+                }
+            }
+
+            if (minHamming < 4) {
+                result.put(dbMatched, true);
+            } else {
+                result.put(finalNeuralNum, false);
+            }
+        }
+
+        return result;
+    }
+
+    private static int hammingDistance(String one, String two) {
+        int counter = 0;
+
+        for (int i = 0; i < one.length(); i++) {
+            if (one.charAt(i) != two.charAt(i)) counter++;
+        }
+
+        return counter;
     }
 
 }

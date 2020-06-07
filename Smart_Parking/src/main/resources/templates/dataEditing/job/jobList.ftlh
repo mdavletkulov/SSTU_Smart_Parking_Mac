@@ -13,7 +13,7 @@
     </div>
     <div><h5 class="mb-3">Должности</h5>
     </div>
-    <table class="table table-striped text-center table-hover table-dark" id="jobs" style="width: 50%">
+    <table class="table table-striped text-center table-hover table-dark" id="jobs" style="width: 80%">
         <thead>
         <tr>
             <th class="align-middle" scope="col">Подразделение</th>

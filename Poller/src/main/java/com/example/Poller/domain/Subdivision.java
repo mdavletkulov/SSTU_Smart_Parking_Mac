@@ -1,5 +1,6 @@
 package com.example.Poller.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Subdivision {
     @ManyToOne
     @JoinColumn(name = "division_id")
     private Division division;
+    @Nationalized
     @NotBlank(message = "Название кафедры не может быть пустым")
     @Length(max = 100, message = "Название кафедры слишком длинное")
     private String name;

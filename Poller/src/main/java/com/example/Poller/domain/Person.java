@@ -1,5 +1,6 @@
 package com.example.Poller.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -21,12 +22,15 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    @Nationalized
     @NotBlank(message = "Поле имени не может быть пустым")
     @Length(max = 60, message = "Значение имени слишком длинное")
     private String firstName;
+    @Nationalized
     @NotBlank(message = "Поле фамилии не может быть пустым")
     @Length(max = 60, message = "Значение фамилии слишком длинное")
     private String secondName;
+    @Nationalized
     @Length(max = 60, message = "Значение отчества слишком длинное")
     private String middleName;
     @ManyToOne
@@ -44,6 +48,7 @@ public class Person {
     private boolean student;
     @Digits(message = "Поле группы может содержать только одно целое число", integer = 1, fraction = 0)
     private Integer course;
+    @Nationalized
     @Length(max = 10, message = "Значение группы слишком длинное")
     private String groupName;
     @Digits(message = "Номер пропуска может содержать только целые числа", integer = 10, fraction = 0)

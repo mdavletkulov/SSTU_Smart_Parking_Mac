@@ -70,7 +70,7 @@ public class ReportCreatorService {
             }
 
             String fileName = "report" + UUID.randomUUID().toString() + ".docx";
-            String filePath = uploadDir + "\\" + fileName;
+            String filePath = uploadDir + "/" + fileName;
             FileOutputStream outputStream = new FileOutputStream(filePath);
             docxModel.write(outputStream);
             outputStream.close();

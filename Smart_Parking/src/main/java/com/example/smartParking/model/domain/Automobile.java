@@ -1,5 +1,6 @@
 package com.example.smartParking.model.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -13,12 +14,14 @@ public class Automobile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     @NotBlank(message = "Номер машины не может быть пустым")
+    @Nationalized
     @Length(max = 12, message = "Значение номера машины слишком длинное")
     private String number;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
     @Length(max = 50, message = "Значение модели машины слишком длинное")
+    @Nationalized
     private String model;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "color_id")

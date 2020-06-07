@@ -14,9 +14,9 @@
     <h5>Должность</h5>
     <form action="/dataEdit/job/edit/${job.getId()}" method="post" class="mt-2 col-sm-4">
 
-        <div class="form-group  typeJobPosition">
-            <label class="typeJobPosition" for="typeJobPosition">Подразделение</label>
-            <select class="form-control typeJobPosition " name="typeJobPosition">
+        <div class="form-group  typeJobPosition1">
+            <label class="typeJobPosition1" for="typeJobPosition1">Подразделение</label>
+            <select class="form-control typeJobPosition1 " name="typeJobPosition1">
                 <#list typeJobPositions as typeJobPosition>
                     <option <#if job.getTypeJobPosition() == typeJobPosition> selected="selected" </#if>>${typeJobPosition}</option>
                 </#list>

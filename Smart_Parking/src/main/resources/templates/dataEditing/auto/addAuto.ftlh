@@ -14,7 +14,7 @@
            class="btn btn-dark stretched-link my-3">Назад</a>
     </div>
     <h5>Автомобиль</h5>
-    <form action="/dataEdit/auto/add" method="post" class="mt-2 col-sm-9">
+    <form action="/dataEdit/auto/add" method="post" class="mt-2 col-sm-12">
         <div class="form-group">
             <label for="model">Марка и модель автомобиля</label>
             <input type="text" class="form-control ${(modelError??)?string('is-invalid', '')} "

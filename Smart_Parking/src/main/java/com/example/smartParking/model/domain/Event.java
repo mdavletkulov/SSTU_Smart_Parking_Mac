@@ -1,5 +1,7 @@
 package com.example.smartParking.model.domain;
 
+import org.hibernate.annotations.Nationalized;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

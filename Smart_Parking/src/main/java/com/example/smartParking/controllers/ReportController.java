@@ -121,6 +121,10 @@ public class ReportController {
                                      @RequestParam(required = false) String student,
                                      @RequestParam(required = false) String employee,
                                      @RequestParam(required = false) String violation) {
+        if (typesJob != null && !typesJob.isBlank()) {
+            if (typesJob.equals("ППС")) typesJob = "PPS";
+            else if (typesJob.equals("АУП")) typesJob = "AUP";
+        }
         boolean onlyViolation = reportService.checkViolation(violation);
         reportService.addDefaultAttributes(model);
         if (!reportService.checkDates(startTime, endTime, model)) {
@@ -198,11 +202,11 @@ public class ReportController {
     @GetMapping("download/{fileName}")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String fileName) throws IOException {
 
-        File file = new File(uploadPath + "\\" + fileName);
+        File file = new File(uploadPath + "/" + fileName);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         Path path = file.toPath();
         String mimeType = Files.probeContentType(path);
-        File fileToDelete = new File(uploadPath + "\\" + fileName);
+        File fileToDelete = new File(uploadPath + "/" + fileName);
 
         ResponseEntity<InputStreamResource> responseEntity = ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

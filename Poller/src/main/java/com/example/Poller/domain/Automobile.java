@@ -1,5 +1,6 @@
 package com.example.Poller.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -12,12 +13,14 @@ public class Automobile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+    @Nationalized
     @NotBlank(message = "Номер машины не может быть пустым")
     @Length(max = 12, message = "Значение номера машины слишком длинное")
     private String number;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
+    @Nationalized
     @Length(max = 50, message = "Значение модели машины слишком длинное")
     private String model;
     @ManyToOne(fetch = FetchType.EAGER)

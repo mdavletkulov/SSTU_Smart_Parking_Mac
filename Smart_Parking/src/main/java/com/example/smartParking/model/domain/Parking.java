@@ -1,5 +1,6 @@
 package com.example.smartParking.model.domain;
 
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Parking {
     private Long Id;
     @NotBlank(message = "Название парковки не может быть пустым")
     @Length(max = 150, message = "Описание парковки слишком велико")
+    @Nationalized
     private String description;
 
     private String imageName;

@@ -1,11 +1,13 @@
 package com.example.Poller.service;
 
+import com.example.Poller.domain.ParkingNumberEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.imageio.ImageIO;
@@ -38,54 +40,59 @@ public class PollerService {
 
     public void processSnapshot() throws IOException {
         String resultFileName;
-        HashMap<Integer, Map<List<String>, String>> placeNumbers = new HashMap<>();
+        List<ParkingNumberEvent> parkingNumberEvents = new ArrayList<>();
 
         parkingService.deleteLastDateEvents(parkingId);
         String uri = snapshotAddress;
-        ResponseEntity<byte[]> img = restTemplate.exchange(uri, HttpMethod.GET, null, byte[].class);
-        if (img.getBody() != null) {
-            String uuidFile = UUID.randomUUID().toString();
-            List<String> fileNames = new ArrayList<>();
-            List<String> numbers = new ArrayList<>();
-            resultFileName = uuidFile + ".jpg";
-            File file = new File(uploadPath + "/autos/" + resultFileName);
-            OutputStream os = new FileOutputStream(file);
-            os.write(img.getBody());
-            os.close();
-            File file1 = new File(uploadPath + "/autos/" + resultFileName);
-            BufferedImage originalImage = ImageIO.read(file1);
+        try {
+            ResponseEntity<byte[]> img = restTemplate.exchange(uri, HttpMethod.GET, null, byte[].class);
+            if (img.getBody() != null) {
+                String uuidFile = UUID.randomUUID().toString();
+                List<String> fileNames = new ArrayList<>();
+                List<String> numbers = new ArrayList<>();
+                resultFileName = uuidFile + ".jpg";
+                File file = new File(uploadPath + "/autos/" + resultFileName);
+                OutputStream os = new FileOutputStream(file);
+                os.write(img.getBody());
+                os.close();
+                File file1 = new File(uploadPath + "/autos/" + resultFileName);
+                BufferedImage originalImage = ImageIO.read(file1);
 
-            uuidFile = UUID.randomUUID().toString();
-            String resultFileName1 = uuidFile + ".jpg";
-            BufferedImage subImgage = originalImage.getSubimage(350, 700, 570, 500);
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
-            placeNumbers.put(1, Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+                uuidFile = UUID.randomUUID().toString();
+                String resultFileName1 = uuidFile + ".jpg";
+                BufferedImage subImgage = originalImage.getSubimage(350, 700, 570, 500);
+                ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+                parkingNumberEvents.add(new ParkingNumberEvent(1, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-            subImgage = originalImage.getSubimage(810, 700, 450, 500);
-            uuidFile = UUID.randomUUID().toString();
-            resultFileName1 = uuidFile + ".jpg";
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
-            placeNumbers.put(2,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+                subImgage = originalImage.getSubimage(810, 700, 450, 500);
+                uuidFile = UUID.randomUUID().toString();
+                resultFileName1 = uuidFile + ".jpg";
+                ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+                parkingNumberEvents.add(new ParkingNumberEvent(2, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-            subImgage = originalImage.getSubimage(1180, 700, 480, 500);
-            uuidFile = UUID.randomUUID().toString();
-            resultFileName1 = uuidFile + ".jpg";
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
-            placeNumbers.put(3,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+                subImgage = originalImage.getSubimage(1180, 700, 480, 500);
+                uuidFile = UUID.randomUUID().toString();
+                resultFileName1 = uuidFile + ".jpg";
+                ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+                parkingNumberEvents.add(new ParkingNumberEvent(3, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-            subImgage = originalImage.getSubimage(1600, 800, 540, 500);
-            uuidFile = UUID.randomUUID().toString();
-            resultFileName1 = uuidFile + ".jpg";
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
-            placeNumbers.put(4,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+                subImgage = originalImage.getSubimage(1600, 800, 540, 500);
+                uuidFile = UUID.randomUUID().toString();
+                resultFileName1 = uuidFile + ".jpg";
+                ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+                parkingNumberEvents.add(new ParkingNumberEvent(4, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-            subImgage = originalImage.getSubimage(2000, 800, 600, 600);
-            uuidFile = UUID.randomUUID().toString();
-            resultFileName1 = uuidFile + ".jpg";
-            ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
-            placeNumbers.put(5,  Map.of(parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
+                subImgage = originalImage.getSubimage(2000, 800, 600, 600);
+                uuidFile = UUID.randomUUID().toString();
+                resultFileName1 = uuidFile + ".jpg";
+                ImageIO.write(subImgage, "jpg", new File(uploadPath + "/autos/" + resultFileName1));
+                parkingNumberEvents.add(new ParkingNumberEvent(5, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-            parkingService.processPollEvent(resultFileName1, placeNumbers, parkingId);
+                parkingService.processPollEvent(resultFileName1, parkingNumberEvents, parkingId);
+            }
+        }
+        catch (HttpServerErrorException e) {
+
         }
     }
 }

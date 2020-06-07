@@ -3,6 +3,7 @@ package com.example.smartParking.controllers.edit;
 import com.example.smartParking.model.domain.Division;
 import com.example.smartParking.model.domain.JobPosition;
 import com.example.smartParking.model.domain.Parking;
+import com.example.smartParking.model.domain.TypeJobPosition;
 import com.example.smartParking.service.DataEditingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,8 +39,10 @@ public class JobEditController {
     }
 
     @PostMapping("job/add")
-    public String addJob(@Valid JobPosition job, BindingResult bindingResult, Model model) {
-        if (dataEditingService.addJob(job, bindingResult, model)) {
+    public String addJob(JobPosition job, String typeJobPosition1, Model model) {
+        if (typeJobPosition1.equals("ППС")) job.setTypeJobPosition(TypeJobPosition.PPS);
+        if (typeJobPosition1.equals("АУП")) job.setTypeJobPosition(TypeJobPosition.AUP);
+        if (dataEditingService.addJob(job, model)) {
             return getJobEdit(model);
         } else return addJob(model);
     }
@@ -52,13 +55,15 @@ public class JobEditController {
     }
 
     @PostMapping("job/edit/{jobId}")
-    public String editJob(@PathVariable Long jobId, @Valid JobPosition changedJob, BindingResult bindingResult, Model model) {
+    public String editJob(@PathVariable Long jobId, JobPosition changedJob, String typeJobPosition1, Model model) {
         Optional<JobPosition> jobPosition = dataEditingService.getJob(jobId);
         if (jobPosition.isEmpty()) {
             model.addAttribute("message", "Такого института не существует");
             return getJobEdit(model);
         }
-        boolean success = dataEditingService.updateJob(jobId, changedJob, bindingResult, model);;
+        if (typeJobPosition1.equals("ППС")) changedJob.setTypeJobPosition(TypeJobPosition.PPS);
+        if (typeJobPosition1.equals("АУП")) changedJob.setTypeJobPosition(TypeJobPosition.AUP);
+        boolean success = dataEditingService.updateJob(jobId, changedJob, model);
         if (success) {
             return getJobEdit(model);
         }

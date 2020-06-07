@@ -1,7 +1,7 @@
 package com.example.Poller.domain;
 
 public enum TypeJobPosition {
-    ППС("ППС"), АУП("АУП");
+    PPS("ППС"), AUP("АУП");
 
     public String type;
 

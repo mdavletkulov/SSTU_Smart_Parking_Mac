@@ -1,6 +1,7 @@
 package com.example.smartParking.model.domain;
 
 import com.example.smartParking.validator.ValidPassword;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -15,15 +16,19 @@ public class UserTemp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Nationalized
     @Email(message = "Некорректный e-mail")
     @NotBlank(message = "Поле email не может быть пустым")
     private String username;
+    @Nationalized
     @NotBlank(message = "Поле имени не может быть пустым")
     @Length(max = 60, message = "Значение имени слишком длинное")
     private String firstName;
+    @Nationalized
     @NotBlank(message = "Поле фамилии не может быть пустым")
     @Length(max = 60, message = "Значение фамилии слишком длинное")
     private String secondName;
+    @Nationalized
     @Length(max = 60, message = "Значение отчества слишком длинное")
     private String middleName;
     @NotBlank(message = "Пароль не может быть пустым")

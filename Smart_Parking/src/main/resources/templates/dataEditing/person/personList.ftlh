@@ -13,7 +13,7 @@
     </div>
     <div><h5 class="mb-3">Водители</h5>
     </div>
-    <table id="persons" class="table table-striped no-border text-center table-dark" style="width:100%">
+    <table id="persons" class="table table-striped no-border text-center table-dark col-sm-12" style="width: 100%">
         <thead>
         <tr>
             <th class="align-middle" scope="col">Водитель</th>
@@ -23,9 +23,7 @@
             <th class="align-middle" scope="col">Кафедра</th>
             <th class="align-middle" scope="col">Группа</th>
             <th class="align-middle" scope="col">Курс</th>
-            <th class="align-middle" scope="col">Пропуск</th>
             <th class="align-middle" scope="col">Дата истечения пропуска</th>
-            <th class="align-middle" scope="col">Специальный статус</th>
             <th></th>
             <th class="align-middle" scope="col"><a href="/dataEdit/person/add"
                                                     class="btn btn-primary stretched-link">
@@ -44,9 +42,7 @@
                 <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getName()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getGroupName()??>${person.getGroupName()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getCourse()??>${person.getCourse()}<#else>&#x2716;</#if></td>
-                <td class="align-middle"><#if person.getPassNum()??>${person.getPassNumString()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getPassEndDate()??>${person.getStringPassEndDate()}<#else>&#x2716;</#if></td>
-                <td class="align-middle"><#if person.isSpecialStatus()>&#9745; <#else>&#x2716;</#if></td>
                 <td class="align-middle">
                     <button id="${person.getId()}" type="button" class="btn btn-primary askDelete" data-toggle="modal">
                         Удалить
@@ -141,14 +137,12 @@
                         {width: '5%', targets: 1},
                         {width: '5%', targets: 2},
                         {width: '5%', targets: 3},
-                        {width: '5%', targets: 4},
+                        {width: '10%', targets: 4},
                         {width: '10%', targets: 5},
                         {width: '5%', targets: 6},
-                        {width: '5%', targets: 7},
-                        {width: '15%', type: 'date-eu', targets: 8},
-                        {width: '10%', targets: 9},
-                        {width: '5%', "orderable": false, targets: 10},
-                        {width: '10%', "orderable": false, targets: 11},
+                        {width: '20%', type: 'date-eu', targets: 7},
+                        {width: '5%', "orderable": false, targets: 8},
+                        {width: '15%', "orderable": false, targets: 9},
                     ],
                     "bAutoWidth": false,
                     language: {

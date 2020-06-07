@@ -8,7 +8,7 @@
         <#if (place?index%5==0) || (place?index==0)>
             <div class="row mt-5 equal">
         </#if>
-        <div class="card col-sm-2 m-2 parent">
+        <div class="card col-sm-3 m-2 parent">
             <a id="${place.getPlaceNumber()}" href="${parking.getId()}/${place.id}">
                 <div class="card-body">
                     <h3 class="card-title" id="${place.getPlaceNumber()}h3">Парковочное
