@@ -56,10 +56,11 @@ public class ParkingController {
     @GetMapping("{parking}")
     public String getParking(@PathVariable Parking parking, Model model) {
         ArrayList<Place> places = Lists.newArrayList(parkingService.findPlacesByParkingId(parking.getId()));
+        List<Event> events = parkingService.getActualEvents(parking.getId());
         model.addAttribute("parking", parking);
         model.addAttribute("places", places);
-        model.addAttribute("placesSize", places.size());
-        return "parking/placesPage";
+        model.addAttribute("events", events);
+        return "parking/placesPage1";
     }
 
     @GetMapping("{parking}/{place}")
@@ -97,7 +98,7 @@ public class ParkingController {
 
     @GetMapping(value = "getPlaces/{parking}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> getSubdivisions(@PathVariable String parking) {
+    public List<String> getPlaces(@PathVariable String parking) {
         List<String> places = new ArrayList<>();
         Long parkingId = Long.valueOf(parking);
         for (Place place : parkingService.findPlacesByParkingId(parkingId)) {

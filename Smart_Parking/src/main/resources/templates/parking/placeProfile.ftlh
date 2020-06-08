@@ -117,7 +117,7 @@
         </#if>
         </tbody>
     </table>
-        <#if imgName?? && !automobile??>
+        <#if imgName??>
             <div class="col-4 ml-5">
                 <img src="/img/autos/${imgName}" class="card-img-top img-fluid" style="height: 20rem">
             </div>

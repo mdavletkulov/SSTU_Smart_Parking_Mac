@@ -1,13 +1,13 @@
-h3.active {
+td.active {
     color: gray;
 }
 
-h3.viol {
+td.viol {
     color: red;
 }
 
-h3.free {
-    color: green;
+td.free {
+    color: greenyellow;
 }
 
 

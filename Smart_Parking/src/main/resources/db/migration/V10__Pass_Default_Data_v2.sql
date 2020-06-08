@@ -62,7 +62,6 @@ values ('Chevrolet Aveo', 'B008AK164', 3, 1),
        (null, 'T061OC64', null, null),
        ('Chevrolet Lanos', 'O828PY64', 9, 7),
        ('Lada Largus', 'T183XM64', 3, 8),
-       (null, 'H380HP64', null, null),
        ('Hyundai Santa Fe', 'B717TK64', 5, 9),
        (null, 'O330XO64', null, null);
 

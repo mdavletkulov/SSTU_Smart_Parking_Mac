@@ -38,19 +38,6 @@
 <#macro registration>
     <form action="/registration" method="post" class="mt-2 col-sm-4">
         <div class="form-group">
-            <label for="firstName">Имя</label>
-            <input type="text" class="form-control ${(firstNameError??)?string('is-invalid', '')} "
-                   id="firstName"
-                   value="<#if userTemp??>${userTemp.firstName}</#if>"
-                   placeholder="Введите имя пользователя"
-                   name="firstName">
-            <#if firstNameError??>
-                <div class="invalid-feedback">
-                    ${firstNameError}
-                </div>
-            </#if>
-        </div>
-        <div class="form-group">
             <label for="secondName">Фамилия</label>
             <input type="text" class="form-control ${(secondNameError??)?string('is-invalid', '')} "
                    id="secondName"
@@ -60,6 +47,19 @@
             <#if secondNameError??>
                 <div class="invalid-feedback">
                     ${secondNameError}
+                </div>
+            </#if>
+        </div>
+        <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" class="form-control ${(firstNameError??)?string('is-invalid', '')} "
+                   id="firstName"
+                   value="<#if userTemp??>${userTemp.firstName}</#if>"
+                   placeholder="Введите имя пользователя"
+                   name="firstName">
+            <#if firstNameError??>
+                <div class="invalid-feedback">
+                    ${firstNameError}
                 </div>
             </#if>
         </div>

@@ -32,4 +32,9 @@ public interface AutomobileRepo extends CrudRepository<Automobile, Long> {
             value = "SELECT * FROM automobile where number = ?1",
             nativeQuery = true)
     List<Automobile> findAutosByNumber(String number);
+
+    @Query(
+            value = "SELECT * FROM automobile where number LIKE ?1",
+            nativeQuery = true)
+    Optional<Automobile> findAutosByContainsNum(String number);
 }

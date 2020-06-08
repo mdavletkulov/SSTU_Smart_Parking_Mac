@@ -41,15 +41,42 @@ public class ParkingService {
 
     private static final String numFormat = "^[a-z,A-Z]\\d{3}[a-z,A-Z]{2}.*";
 
+    private static final List<List<Character>> similarChars = Arrays.asList(
+            Arrays.asList('1', '7', '5', '2', '4'),
+            Arrays.asList('0', '3', '8', '9', '6'),
+            Arrays.asList('E', 'H', 'К', 'В', 'Т', 'M'),
+            Arrays.asList('A', 'У', 'Х'),
+            Arrays.asList('О', 'Р', 'С')
+    );
+
     public void deleteLastDateEvents(Long parkingId) {
         List<Event> events = eventRepo.getOldEventsWithPhotos(parkingId);
         for (Event event : events) {
             String fileName = event.getPhotoName();
-            File file = new File(uploadPath + "/autos/" + fileName);
+            File file = new File(uploadPath + "/images/autos/" + fileName);
             if (file.delete()) {
                 event.setPhotoName(null);
                 eventRepo.save(event);
             }
+        }
+    }
+
+    public void deleteErrorEvents() {
+        List<Event> events = eventRepo.getErrorEvents();
+        for (Event event : events) {
+            if (event.getAutomobile() == null) {
+                String fileName = event.getPhotoName();
+                File file = new File(uploadPath + "/images/autos/" + fileName);
+                file.delete();
+                eventRepo.delete(event);
+            }
+        }
+        List<Event> smallEvents = eventRepo.getSmallErrorEvents();
+        for (Event event : smallEvents) {
+                String fileName = event.getPhotoName();
+                File file = new File(uploadPath + "/images/autos/" + fileName);
+                file.delete();
+                eventRepo.delete(event);
         }
     }
 
@@ -66,7 +93,7 @@ public class ParkingService {
                 processAutoEvents(parkingNumberEvent, parkingId, noRegionNums);
             }
         }
-        File file = new File(uploadPath + "/autos/" + resultFileName);
+        File file = new File(uploadPath + "/images/autos/" + resultFileName);
         file.delete();
     }
 
@@ -79,7 +106,12 @@ public class ParkingService {
 
     private void processAutoEvents(ParkingNumberEvent parkingNumberEvent, Long parkingId, List<String> noRegionNums) {
         Map<String, Boolean> readNums = new HashMap<>();
-        readNums = processNumber(parkingNumberEvent.getNumbers(), noRegionNums);
+        if (parkingNumberEvent.getPlaceNum().equals(5)) {
+            readNums = processNumber(noRegionNums, parkingNumberEvent.getNumbers(), true);
+        }
+        else {
+            readNums = processNumber(noRegionNums, parkingNumberEvent.getNumbers(), false);
+        }
         String number = null;
         for (Map.Entry<String, Boolean> num : readNums.entrySet()) {
             if (num.getValue()) {
@@ -95,16 +127,18 @@ public class ParkingService {
     }
 
     private void processKnownAuto(ParkingNumberEvent parkingNumberEvent, String number, Long parkingId) {
-        Optional<Event> activePlaceEvent = eventRepo.findActiveParkingEventByPlaceNum(parkingId, parkingNumberEvent.getPlaceNum());
-        Optional<Event> activeAutoEvent = eventRepo.findActiveAutoEvent(number);
-        Optional<Event> activeAutoPlaceEvent = eventRepo.findActiveAutoPlaceEvent(number, parkingId, parkingNumberEvent.getPlaceNum());
-        if (activeAutoPlaceEvent.isPresent()) {
+        Optional<Event> activeAutoPlaceEvent = eventRepo.findActiveAutoPlaceEvent(number+"%", parkingId, parkingNumberEvent.getPlaceNum());
+        if (activeAutoPlaceEvent.isPresent() && activeAutoPlaceEvent.get().getAutomobile() != null) {
+            File file = new File(uploadPath + "/images/autos/" + parkingNumberEvent.getFileName());
+            file.delete();
             return;
         }
+        Optional<Event> activePlaceEvent = eventRepo.findActiveParkingEventByPlaceNum(parkingId, parkingNumberEvent.getPlaceNum());
         if (activePlaceEvent.isPresent()) {
             Event activeEvent = activePlaceEvent.get();
             stopEvent(activeEvent);
         }
+        Optional<Event> activeAutoEvent = eventRepo.findActiveAutoEventLike(number);
         if (activeAutoEvent.isPresent()) {
             Event activeEvent = activeAutoEvent.get();
             stopEvent(activeEvent);
@@ -112,7 +146,7 @@ public class ParkingService {
         Event event = new Event();
         Optional<Place> place = placeRepo.findPlace(parkingNumberEvent.getPlaceNum(), parkingId);
         if (place.isPresent()) {
-            Optional<Automobile> automobile = automobileRepo.findByNumber(number);
+            Optional<Automobile> automobile = automobileRepo.findAutosByContainsNum(number+"%");
             if (automobile.isPresent()) {
                 Date date = new Date();
                 long time = date.getTime();
@@ -129,6 +163,12 @@ public class ParkingService {
 
     private void processUnknownAuto(ParkingNumberEvent parkingNumberEvent, Long parkingId) {
         Event event = new Event();
+        Optional<Event> event1 = eventRepo.findActiveParkingEventByPlaceNum(parkingId, parkingNumberEvent.getPlaceNum());
+        if (event1.isPresent()) {
+            File file = new File(uploadPath + "/images/autos/" + parkingNumberEvent.getFileName());
+            file.delete();
+            return;
+        }
         Optional<Place> place = placeRepo.findPlace(parkingNumberEvent.getPlaceNum(), parkingId);
         if (place.isPresent()) {
             Date date = new Date();
@@ -151,6 +191,9 @@ public class ParkingService {
         Date date = new Date();
         long time = date.getTime();
         event.setEndTime(new Timestamp(time));
+        File file = new File(uploadPath + "/images/autos/"+event.getPhotoName());
+        file.delete();
+        event.setPhotoName(null);
         eventRepo.save(event);
     }
 
@@ -233,46 +276,69 @@ public class ParkingService {
         return result.getBody().getNumbers();
     }
 
-    public static HashMap<String, Boolean> processNumber(List<String> dbNumbers, List<String> neuralNumbers) {
-        if (dbNumbers == null || neuralNumbers == null) {
-            throw new IllegalArgumentException("Null arguments passed");
-        }
-
-        HashMap<String, Boolean> result = new HashMap<>();
-        for (String neuralNum : neuralNumbers) {
-            if (neuralNum.length() < 6 || !neuralNum.matches(numFormat)) {
-                continue;
+        public static HashMap<String, Boolean> processNumber(List<String> dbNumbers, List<String> neuralNumbers,
+        boolean isBadPicture) {
+            if (dbNumbers == null || neuralNumbers == null) {
+                throw new IllegalArgumentException("Null arguments passed");
             }
-            String finalNeuralNum = neuralNum.substring(0, 6).toUpperCase();
 
-            int minHamming = 100;
-            String dbMatched = "";
-            for (String dbNum : dbNumbers) {
-                int currentHamming = hammingDistance(dbNum, finalNeuralNum);
-                if (currentHamming < minHamming) {
-                    minHamming = currentHamming;
-                    dbMatched = dbNum;
+            HashMap<String, Boolean> result = new HashMap<>();
+            for (String neuralNum : neuralNumbers) {
+                if (neuralNum.length() < 6 || !neuralNum.matches(numFormat)) {
+                    continue;
+                }
+                String finalNeuralNum = neuralNum.substring(0, 6).toUpperCase();
+
+                double minHamming = 100;
+                String dbMatched = "";
+                for (String dbNum : dbNumbers) {
+                    double currentHamming = isBadPicture
+                            ? cleverHammingDistance(dbNum, finalNeuralNum)
+                            : hammingDistance(dbNum, finalNeuralNum);
+                    if (currentHamming < minHamming) {
+                        minHamming = currentHamming;
+                        dbMatched = dbNum;
+                    }
+                }
+
+                if ((minHamming < 3.0 && !isBadPicture) ||  (minHamming < 4.0 && isBadPicture)) {
+                    result.put(dbMatched, true);
+                } else {
+                    result.put(finalNeuralNum, false);
                 }
             }
 
-            if (minHamming < 4) {
-                result.put(dbMatched, true);
-            } else {
-                result.put(finalNeuralNum, false);
+            return result;
+        }
+
+        private static double hammingDistance(String one, String two) {
+            int counter = 0;
+
+            for (int i = 0; i < one.length(); i++) {
+                if (one.charAt(i) != two.charAt(i)) counter++;
             }
+
+            return counter;
         }
 
-        return result;
-    }
+        private static double cleverHammingDistance(String one, String two) {
+            double counter = 0;
 
-    private static int hammingDistance(String one, String two) {
-        int counter = 0;
+            for (int i = 0; i < one.length(); i++) {
+                if (one.charAt(i) == two.charAt(i)) {
+                    continue;
+                }
+                for (List<Character> similarity : similarChars) {
+                    if (similarity.contains(one.charAt(i)) && similarity.contains(two.charAt(i))) {
+                        counter -= 0.5;
+                        break;
+                    }
 
-        for (int i = 0; i < one.length(); i++) {
-            if (one.charAt(i) != two.charAt(i)) counter++;
+                }
+                counter += 1.0;
+            }
+
+            return counter;
         }
-
-        return counter;
-    }
 
 }

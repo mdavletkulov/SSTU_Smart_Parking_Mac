@@ -17,6 +17,18 @@ public interface EventRepo extends CrudRepository<Event, Long> {
     List<Event> getOldEventsWithPhotos(Long parkingId);
 
     @Query(
+            value = "Select * FROM parking_event LEFT JOIN parking_place pp on parking_event.place_id = pp.id " +
+                    "WHERE DATEDIFF(minute, start_time, end_time) < 31",
+            nativeQuery = true)
+    List<Event> getErrorEvents();
+
+    @Query(
+            value = "Select * FROM parking_event LEFT JOIN parking_place pp on parking_event.place_id = pp.id " +
+                    "WHERE DATEDIFF(minute, start_time, end_time) < 7",
+            nativeQuery = true)
+    List<Event> getSmallErrorEvents();
+
+    @Query(
             value = "Select * FROM parking_event WHERE place_id = ?1 and end_time IS NULL",
             nativeQuery = true)
     Optional<Event> findActivePlaceEvent(Long parkingPlaceId);
@@ -48,8 +60,13 @@ public interface EventRepo extends CrudRepository<Event, Long> {
     Optional<Event> findActiveAutoEvent(String number);
 
     @Query(
+            value = "Select * FROM parking_event LEFT JOIN automobile a on parking_event.automobile_id = a.id where a.number LIKE ?1 and end_time IS NULL order by start_time DESC",
+            nativeQuery = true)
+    Optional<Event> findActiveAutoEventLike(String number);
+
+    @Query(
             value = "Select * FROM parking_event LEFT JOIN automobile a on parking_event.automobile_id = a.id LEFT JOIN parking_place ON parking_event.place_id = parking_place.id" +
-                    " where a.number =?1 and parking_place.parking_id = ?2 and parking_place.place_number = ?3 and end_time IS NULL order by start_time DESC",
+                    " where number LIKE ?1 and parking_place.parking_id = ?2 and parking_place.place_number = ?3 and end_time IS NULL order by start_time DESC",
             nativeQuery = true)
     Optional<Event> findActiveAutoPlaceEvent(String number, Long parkingId, Integer placeNum);
 
