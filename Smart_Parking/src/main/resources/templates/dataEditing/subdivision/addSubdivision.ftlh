@@ -11,7 +11,7 @@
         <a href="/dataEdit/subdivision"
            class="btn btn-dark stretched-link my-3">Назад</a>
     </div>
-    <h5>Кафедра</h5>
+    <h5>Кафедра/Подразделение</h5>
     <form action="/dataEdit/subdivision/add" method="post" class="mt-2 col-sm-4">
         <div class="form-group  division">
             <label class="division" for="division">Институты</label>
@@ -27,6 +27,21 @@
                 </div>
             </#if>
         </div>
+
+        <div class="form-group typeJobPosition">
+            <label class="typeJobPosition" for="typeJobPosition1">Категория</label>
+            <select class="form-control typeJobPosition1" name="typeJobPosition1">
+                <#list typeJobPositions as typeJobPosition>
+                    <option>${typeJobPosition}</option>
+                </#list>
+            </select>
+            <#if typeJobPositionsError??>
+                <div class="invalid-feedback">
+                    ${typeJobPositionError}
+                </div>
+            </#if>
+        </div>
+
         <div class="form-group">
             <label for="name">Название кафедры</label>
             <input type="text" class="form-control ${(nameError??)?string('is-invalid', '')} "

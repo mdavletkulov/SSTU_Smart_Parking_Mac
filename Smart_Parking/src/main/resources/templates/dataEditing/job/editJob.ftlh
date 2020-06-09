@@ -14,20 +14,6 @@
     <h5>Должность</h5>
     <form action="/dataEdit/job/edit/${job.getId()}" method="post" class="mt-2 col-sm-4">
 
-        <div class="form-group  typeJobPosition1">
-            <label class="typeJobPosition1" for="typeJobPosition1">Подразделение</label>
-            <select class="form-control typeJobPosition1 " name="typeJobPosition1">
-                <#list typeJobPositions as typeJobPosition>
-                    <option <#if job.getTypeJobPosition() == typeJobPosition> selected="selected" </#if>>${typeJobPosition}</option>
-                </#list>
-            </select>
-            <#if typeJobPositionsError??>
-                <div class="invalid-feedback">
-                    ${typeJobPositionError}
-                </div>
-            </#if>
-        </div>
-
         <div class="form-group">
             <label for="namePosition">Название должности</label>
             <input type="text" class="form-control ${(namePositionError??)?string('is-invalid', '')}"

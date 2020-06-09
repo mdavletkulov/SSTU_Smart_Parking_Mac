@@ -2,16 +2,14 @@
 <@c.page>
     <div>
         <a href="/parking/${parkingEvent.getPlace().getParking().getId()}"
-           class="btn btn-dark stretched-link">Назад</a>
+           class="btn btn-dark stretched-link mb-4">Назад</a>
     </div>
-    <h4>${parkingName}</h4>
-    <h5 class="mt-3">Парковочное место номер ${placeNum}</h5>
+    <h3 class="mb-4">${parkingName}</h3>
     <div class="row">
     <table class="table table-borderless table-striped col-4 table-hover table-dark">
         <thead>
         <tr class="d-flex">
-            <th scope="col" class="col-1"></th>
-            <th scope="col" class="col-1"></th>
+            <th scope="col" colspan="2">Парковочное место номер ${placeNum}</th>
         </tr>
         </thead>
         <tbody>
@@ -32,6 +30,12 @@
                     </#if>
                 </tr>
             </#if>
+        </#if>
+        <#if !automobile?? && parkingEvent.getUnknownNum()??>
+            <tr class="d-flex">
+                <th scope="row">Считанный номер автомобиля</th>
+                <td>${parkingEvent.getUnknownNum()}</td>
+            </tr>
         </#if>
         <#if person??>
             <tr class="d-flex">
@@ -110,16 +114,11 @@
                 <td class="bg-danger w-100">Неизвестный автомобиль!</td>
             </tr>
         </#if>
-        <#if personViolation?? && personViolation>
-            <tr class="d-flex">
-                <td class="bg-danger w-100">Неизвестный водитель!</td>
-            </tr>
-        </#if>
         </tbody>
     </table>
         <#if imgName??>
             <div class="col-4 ml-5">
-                <img src="/img/autos/${imgName}" class="card-img-top img-fluid" style="height: 20rem">
+                <img src="/img/autos/${imgName}" class="card-img-top img-fluid">
             </div>
         </#if>
 

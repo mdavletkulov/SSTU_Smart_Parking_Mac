@@ -133,7 +133,7 @@
 
         <div class="form-group subdivision">
             <label class="subdivision" for="subdivision"
-                   <#if !person.getSubdivision()??>hidden="hidden"</#if> >Кафедра</label>
+                   <#if !person.getSubdivision()??>hidden="hidden"</#if> >Кафедра/Подразделение</label>
             <select class="form-control subdivision " name="subdivision"
                     <#if !person.getSubdivision()??>hidden="hidden"</#if>>
                 <option selected="selected" value=""></option>

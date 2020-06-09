@@ -11,10 +11,10 @@
             <th class="align-middle">Статус</th>
             <th class="align-middle">Должность</th>
             <th class="align-middle">Институт</th>
+            <th class="align-middle">Кафедра/Подразделение</th>
             <th class="align-middle">Группа</th>
             <th class="align-middle">Курс</th>
             <th class="align-middle">Пропуск</th>
-            <th class="align-middle">Дата истечения пропуска</th>
             <th class="align-middle"></th>
         </tr>
         </thead>
@@ -36,10 +36,10 @@
                 <td class="align-middle"><#if person.isStudent()>Студент</#if> <#if person.isEmployee()>Сотрудник</#if></td>
                 <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getNamePosition()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getDivision().getName()}<#else>&#x2716;</#if></td>
+                <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getName()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getGroupName()??>${person.getGroupName()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getCourse()??>${person.getCourse()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><#if person.getPassNum()??>${person.getPassNum()}<#else>&#x2716;</#if></td>
-                <td class="align-middle"><#if person.getPassEndDate()??>${person.getStringPassEndDate()}<#else>&#x2716;</#if></td>
                 <td class="align-middle"><a href="/report/person/${person.getId()}" class="btn btn-primary stretched-link">Отчет</a></td>
             </tr>
         </#list>
@@ -58,10 +58,10 @@
                     {width: '5%', targets: 3},
                     {width: '5%', targets: 4},
                     {width: '5%', targets: 5},
-                    {width: '5%', targets: 6},
+                    {width: '15%', targets: 6},
                     {width: '5%', targets: 7},
                     {width: '5%', targets: 8},
-                    {width: '15%', targets: 9},
+                    {width: '5%', targets: 9},
                     {width: '10%', "orderable": false, targets: 10},
                 ],
                 language: {

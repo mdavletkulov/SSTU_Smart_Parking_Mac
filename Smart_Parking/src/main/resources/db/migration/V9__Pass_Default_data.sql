@@ -18,15 +18,15 @@ values (N'Красный'),
        (N'Оранжевый'),
        (N'Зеленый');
 
-insert into job_position(name_position, type_job_position)
-values (N'Заведующий кафедрой', 'PPS'),
-       (N'Профессор', 'PPS'),
-       (N'Доцент', 'PPS'),
-       (N'Ассистент', 'PPS'),
-       (N'Старший преподаватель', 'PPS'),
-       (N'Президент университета', 'AUP'),
-       (N'Первый проректор', 'AUP'),
-       (N'Ректор', 'AUP');
+insert into job_position(name_position)
+values (N'Заведующий кафедрой'),
+       (N'Профессор'),
+       (N'Доцент'),
+       (N'Ассистент'),
+       (N'Старший преподаватель'),
+       (N'Президент университета'),
+       (N'Первый проректор'),
+       (N'Ректор');
 
 insert into parking(description, image_name)
 values (N'Парковка у первого корпуса', 'first_Parking.jpg'),

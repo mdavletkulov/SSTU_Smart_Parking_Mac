@@ -16,7 +16,6 @@
     <table class="table table-striped text-center table-hover table-dark" id="jobs" style="width: 80%">
         <thead>
         <tr>
-            <th class="align-middle" scope="col">Подразделение</th>
             <th class="align-middle" scope="col">Должность</th>
             <th></th>
             <th class="align-middle" scope="col">
@@ -27,7 +26,6 @@
         <tbody>
         <#list jobs as job>
             <tr>
-                <th class="align-middle" scope="row">${job.getTypeJobPosition()}</th>
                 <td class="align-middle" scope="row">${job.getNamePosition()}</td>
                 <td>
                     <button id="${job.getId()}" type="button" class="btn btn-primary askDelete"
@@ -72,10 +70,9 @@
             $('#jobs').DataTable({
                 "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Все"]],
                 columnDefs: [
-                    {width: '15%', targets: 0},
-                    {width: '45%',  targets: 1},
-                    {width: '25%', "orderable": false, targets: 2},
-                    {width: '15%', "orderable": false, targets: 3}
+                    {width: '50%',  targets: 0},
+                    {width: '30%', "orderable": false, targets: 1},
+                    {width: '20%', "orderable": false, targets: 2}
                 ],
                 language: {
                     url: '/static/localization/Russian.json'

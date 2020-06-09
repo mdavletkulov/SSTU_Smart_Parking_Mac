@@ -87,6 +87,24 @@ public class ParkingController {
         for (Event event : actualEvents) {
             updateParkings.stream().peek(updateParking -> {
                 if (updateParking.getPlaceId().equals(event.getPlace().getId())) {
+                    if (event.getAutomobile() != null) {
+                        updateParking.setModel(event.getAutomobile().getModel());
+                        updateParking.setNumber(event.getAutomobile().getNumber());
+                    }
+                    else if (event.getUnknownNum() != null && !event.getUnknownNum().isBlank()) {
+                        updateParking.setNumber(event.getUnknownNum());
+                    }
+                    else {
+                        updateParking.setModel("\u2716");
+                        updateParking.setNumber("\u2716");
+                    }
+                    if (event.getPerson() != null) {
+                        updateParking.setPerson(event.getPerson().getFullName());
+                    }
+                    else {
+                        updateParking.setPerson("\u2716");
+                    }
+                    updateParking.setStartDate(event.getStartDateString());
                     updateParking.setViolation(event.getPassNumViolation() || event.getAutoViolation() || event.getPersonViolation());
                     updateParking.setActive(true);
                 }

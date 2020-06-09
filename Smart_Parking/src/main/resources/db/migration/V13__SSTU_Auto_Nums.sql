@@ -1,8 +1,8 @@
-insert into job_position(name_position, type_job_position)
-values (N'Главный бухгалтер', 'AUP'),
-       (N'Начальник сектора виртуальных технологий ЦИТиДО', 'AUP'),
-       (N'Программист ЦИТиДО', 'AUP'),
-       (N'директор ЦИТиДО', 'AUP');
+insert into job_position(name_position)
+values (N'Главный бухгалтер'),
+       (N'Начальник сектора виртуальных технологий ЦИТиДО'),
+       (N'Программист ЦИТиДО'),
+       (N'директор ЦИТиДО');
 
 
 insert into person(course, employee, first_name, second_name, middle_name, group_name, pass_end_date,

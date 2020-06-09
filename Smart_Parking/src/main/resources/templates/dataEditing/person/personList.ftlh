@@ -20,7 +20,7 @@
             <th class="align-middle" scope="col">Статус</th>
             <th class="align-middle" scope="col">Должность</th>
             <th class="align-middle" scope="col">Институт</th>
-            <th class="align-middle" scope="col">Кафедра</th>
+            <th class="align-middle" scope="col">Кафедра/Подразделение</th>
             <th class="align-middle" scope="col">Группа</th>
             <th class="align-middle" scope="col">Курс</th>
             <th class="align-middle" scope="col">Дата истечения пропуска</th>

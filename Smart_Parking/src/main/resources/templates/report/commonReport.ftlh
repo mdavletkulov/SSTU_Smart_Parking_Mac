@@ -12,36 +12,38 @@
     <#if student??><h5>Отчет о студентах</h5> </#if>
     <#if !student?? && !employee??><h5>Общий отчет</h5> </#if>
     <form method="post" action="/report/common" class="col-sm-4">
-    <div class="form-group  typesJob">
-        <label class="typesJob" for="typesJob" <#if !employee??> hidden="hidden"</#if>>Подразделение (опционально)</label>
-        <select class="form-control typesJob" name="typesJob" <#if !employee??> hidden="hidden"</#if>>
-            <option selected="selected" value=""/>
-            <#list typesJob as typeJob>
-                <option>${typeJob}</option>
-            </#list>
-        </select>
-    </div>
-    <div class="form-group  division">
-        <label class="division" for="division" <#if employee??> hidden="hidden"</#if>>Институт (опционально)</label>
-        <select class="form-control division" name="division" <#if employee??> hidden="hidden"</#if>>
-            <option selected="selected" value=""/>
-            <#list divisions as division>
-                <option>${division.getName()}</option>
-            </#list>
-        </select>
-    </div>
+        <div class="form-group  division">
+            <label class="division" for="division" >Институт (опционально)</label>
+            <select class="form-control division" name="division" >
+                <option selected="selected" value=""/>
+                <#list divisions as division>
+                    <option>${division.getName()}</option>
+                </#list>
+            </select>
+        </div>
 
-    <div class="form-group  subdivisions">
-        <label class="subdivision" for="subdivision"  hidden="hidden">Кафедра (опционально)</label>
-        <select class="form-control subdivision" name="subdivision" hidden="hidden">
-        </select>
-    </div>
+        <div class="form-group  typesJob">
+            <label class="typesJob" for="typesJob"  hidden="hidden">Категория сотрудника
+                (опционально)</label>
+            <select class="form-control typesJob" name="typesJob"  hidden="hidden">
+                <option selected="selected" value=""/>
+                <#list typesJob as typeJob>
+                    <option>${typeJob}</option>
+                </#list>
+            </select>
+        </div>
+
+        <div class="form-group  subdivisions">
+            <label class="subdivision" for="subdivision" hidden="hidden">Кафедра/Подразделение (опционально)</label>
+            <select class="form-control subdivision" name="subdivision" hidden="hidden">
+            </select>
+        </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
         <#if employee??>
-        <input type="hidden" name="employee" value="${employee}"/>
+            <input type="hidden" name="employee" value="${employee}"/>
         </#if>
         <#if student??>
-        <input type="hidden" name="student" value="${student}"/>
+            <input type="hidden" name="student" value="${student}"/>
         </#if>
         <#if violation??>
             <input type="hidden" name="violation" value="${violation}"/>
@@ -49,8 +51,8 @@
         <#if fileName??>
             <input type="hidden" name="fileName" class="fileName" value="${fileName}"/>
         </#if>
-    <@r.dateReport/>
-    <button type="submit" class="btn btn-primary mt-3 send">Генерация отчета</button>
+        <@r.dateReport/>
+        <button type="submit" class="btn btn-primary mt-3 send">Генерация отчета</button>
     </form>
     <script>
 
@@ -67,7 +69,6 @@
         var success = '${(success??)?string('yes', 'no')}';
 
 
-
         $(document).ready(function () {
 
             var fileName = $("input.fileName").val();
@@ -79,7 +80,7 @@
 
             function deleteReport() {
                 $.ajax({
-                    url: '/report/delete/'+fileName
+                    url: '/report/delete/' + fileName
                 });
             }
 
@@ -88,33 +89,38 @@
             }
             subdivisionSelect.empty();
             if (employee === 'yes') {
-                divisionsSelect.empty();
-            }
-            if (employee === 'yes') {
-            typesJobSelect.change(function () {
-                var selectedTypeJob = $(this).children("option:selected").val();
-                division(selectedTypeJob);
-            });
+                typesJobSelect.change(function () {
+                    var selectedTypeJob = $(this).children("option:selected").val();
+                    var selectedDivision = divisionsSelect.children("option:selected").val();
+                    subdivision(selectedDivision, selectedTypeJob);
+                });
             }
             divisionsSelect.change(function () {
                 if (!isEmpty($(this).children("option:selected"))) {
-                    var selectedDivision = $(this).children("option:selected").val();
-                    subdivision(selectedDivision);
-                } else {
-                        subdivisionSelect.empty();
-                        subdivisionSelect.attr("hidden", "hidden");
-                        subdivisionLabel.attr("hidden", "hidden");
+                    if (employee === 'yes') {
+                        typesJob();
+                    } else {
+                        var selectedDivision = $(this).children("option:selected").val();
+                        subdivision(selectedDivision);
                     }
+                } else {
+                    typesJobSelect.attr("hidden", "hidden");
+                    typesJobLabel.attr("hidden", "hidden");
+                    subdivisionSelect.empty();
+                    subdivisionSelect.attr("hidden", "hidden");
+                    subdivisionLabel.attr("hidden", "hidden");
+                }
 
             });
 
         });
 
-        function subdivision(selectedDivision) {
+
+        function subdivision(selectedDivision, selectedTypeJob) {
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
-                url: "/report/common/subdivision/" + selectedDivision,
+                url: "/report/common/subdivision?division=" + selectedDivision +"&typeJob=" + selectedTypeJob,
                 dataType: 'json',
                 cache: false,    //This will force requested pages not to be cached by the browser
                 timeout: 600000,
@@ -154,6 +160,11 @@
                 subdivisionSelect.attr("hidden", "hidden");
                 subdivisionLabel.attr("hidden", "hidden");
             }
+        }
+
+        function typesJob() {
+            typesJobSelect.removeAttr("hidden");
+            typesJobLabel.removeAttr("hidden");
         }
 
         function isEmpty(el) {

@@ -141,25 +141,35 @@ public class ReportController {
         else return "report/commonReport";
     }
 
-    @GetMapping(value = "common/subdivision/{division}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "common/subdivision", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> getSubdivisions(@PathVariable String division) {
+    public List<String> getSubdivisions(@RequestParam String division, @RequestParam String typeJob) {
         List<String> subdivisions = new ArrayList<>();
-        for (Subdivision subdivision : subdivisionRepo.findByDivision(division)) {
-            subdivisions.add(subdivision.getName());
+        if (typeJob != null && !typeJob.isBlank() && !typeJob.equals("undefined")) {
+            String typeJobEn = null;
+            if (typeJob.equals("ППС"))  typeJobEn = "PPS";
+            if (typeJob.equals("АУП"))  typeJobEn = "AUP";
+            for (Subdivision subdivision : subdivisionRepo.findByDivisionAndTypeJob(division, typeJobEn)) {
+                subdivisions.add(subdivision.getName());
+            }
+        }
+        else {
+            for (Subdivision subdivision : subdivisionRepo.findByDivisionAndTypeJob(division, "PPS")) {
+                subdivisions.add(subdivision.getName());
+            }
         }
         return subdivisions;
     }
 
-    @GetMapping(value = "common/division/{typeJob}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<String> getDivisions(@PathVariable String typeJob) {
-        List<String> divisions = new ArrayList<>();
-        for (Division division : divisionRepo.findByTypeJob(typeJob)) {
-            divisions.add(division.getName());
-        }
-        return divisions;
-    }
+//    @GetMapping(value = "common/division/{typeJob}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseBody
+//    public List<String> getDivisions(@PathVariable String typeJob) {
+//        List<String> divisions = new ArrayList<>();
+//        for (Division division : divisionRepo.findByTypeJob(typeJob)) {
+//            divisions.add(division.getName());
+//        }
+//        return divisions;
+//    }
 
 
     @GetMapping("simple")

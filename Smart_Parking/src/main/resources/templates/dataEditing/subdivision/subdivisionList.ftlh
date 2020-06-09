@@ -17,7 +17,8 @@
         <thead >
         <tr>
             <th class="align-middle" scope="col">Институт</th>
-            <th class="align-middle" scope="col">Кафедра</th>
+            <th class="align-middle" scope="col">Категория</th>
+            <th class="align-middle" scope="col">Кафедра/Подразделение</th>
             <th></th>
             <th class="align-middle"  scope="col">
                 <a href="/dataEdit/subdivision/add" class="btn btn-primary stretched-link">
@@ -28,6 +29,7 @@
         <#list subdivisions as subdivision>
             <tr>
                 <th class="align-middle" scope="row"><#if subdivision.getDivision()??>${subdivision.getDivision().getName()}<#else>&#x2716;</#if></th>
+                <td class="align-middle" scope="row">${subdivision.getTypeJobPosition()}</td>
                 <td class="align-middle" scope="row">${subdivision.getName()}</td>
                 <td>
                     <button id="${subdivision.getId()}" type="button" class="btn btn-primary askDelete"
@@ -78,9 +80,10 @@
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Все"]],
             columnDefs: [
                 {width: '15%', targets: 0},
-                {width: '50%', targets: 1},
-                {width: '20%', "orderable": false, targets: 2},
-                {width: '15%', "orderable": false, targets: 3},
+                {width: '10%', targets: 1},
+                {width: '40%', targets: 2},
+                {width: '20%', "orderable": false, targets: 3},
+                {width: '15%', "orderable": false, targets: 4},
             ],
             language: {
                 url: '/static/localization/Russian.json'

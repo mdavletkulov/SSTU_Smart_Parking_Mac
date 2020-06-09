@@ -27,13 +27,13 @@
         <tbody>
         <#list events as event>
             <tr>
-                <th class="align-middle" scope="row"><#if event.getPlace()??>${event.getPlace().getParking().getDescription()}</#if></th>
-                <td class="align-middle" scope="row"><#if event.getPlace()??>${event.getPlace().getPlaceNumber()}</#if></td>
-                <td class="align-middle" scope="row"><#if event.getPerson()??>${event.getPerson().getFullName()}</#if></td>
-                <td class="align-middle" scope="row"><#if event.getAutomobile()?? && event.getAutomobile().getModel()?? >${event.getAutomobile().getModel()}</#if></td>
-                <td class="align-middle" scope="row"><#if event.getAutomobile()??>${event.getAutomobile().getNumber()}</#if></td>
+                <th class="align-middle" scope="row"><#if event.getPlace()??>${event.getPlace().getParking().getDescription()}<#else>&#x2716;</#if></th>
+                <td class="align-middle" scope="row"><#if event.getPlace()??>${event.getPlace().getPlaceNumber()}<#else>&#x2716;</#if></td>
+                <td class="align-middle" scope="row"><#if event.getPerson()??>${event.getPerson().getFullName()}<#else>&#x2716;</#if></td>
+                <td class="align-middle" scope="row"><#if event.getAutomobile()?? && event.getAutomobile().getModel()?? >${event.getAutomobile().getModel()}<#else>&#x2716;</#if></td>
+                <td class="align-middle" scope="row"><#if event.getAutomobile()??>${event.getAutomobile().getNumber()}<#else>&#x2716;</#if></td>
                 <td class="align-middle" scope="row">${event.getStartDateString()}</td>
-                <td class="align-middle" scope="row"><#if event.getEndTime()??>${event.getEndDateString()}</#if></td>
+                <td class="align-middle" scope="row"><#if event.getEndTime()??>${event.getEndDateString()}<#else>&#x2716;</#if></td>
                 <td class="align-middle" scope="row"><#if event.getPassNumViolation() || event.getAutoViolation() || event.getPersonViolation()>&#x2716;<#else>&#9745;</#if></td>
             </tr>
         </#list>

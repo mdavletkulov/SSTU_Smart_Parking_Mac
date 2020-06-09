@@ -53,7 +53,7 @@ public interface EventRepo extends CrudRepository<Event, Long> {
 
     @Query(
             value = "Select * FROM parking_event LEFT JOIN automobile a on parking_event.automobile_id = a.id" +
-                    " LEFT JOIN person p on a.person_id = p.id LEFT JOIN job_position jp on p.job_position = jp.id " +
+                    " LEFT JOIN person p on a.person_id = p.id LEFT JOIN subdivision jp on p.subdivision = jp.id " +
                     "WHERE start_time >= ?1 and end_time <= ?2 and type_job_position = ?3 order by end_time DESC",
             nativeQuery = true)
     List<Event> findAllParkingBetweenDatesByJobType(Timestamp startTime, Timestamp endTime, String typeJobPosition);

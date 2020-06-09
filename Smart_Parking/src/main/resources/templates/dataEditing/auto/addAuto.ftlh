@@ -76,7 +76,7 @@
                         <tr>
                             <th class="align-middle" scope="col">Водитель</th>
                             <th class="align-middle" scope="col">Статус</th>
-                            <th class="align-middle" scope="col">Подразделение</th>
+                            <th class="align-middle" scope="col">Категория сотрудника</th>
                             <th class="align-middle" scope="col">Должность</th>
                             <th class="align-middle" scope="col">Институт</th>
                             <th class="align-middle" scope="col">Группа</th>
@@ -92,7 +92,7 @@
                             <tr id="${person.getId()}" <#if automobile?? && automobile.getPerson() == person> class="table-success" </#if>>
                                 <th class="align-middle" scope="row">${person.getFullName()}</th>
                                 <td class="align-middle"><#if person.isStudent()>Студент</#if> <#if person.isEmployee()>Сотрудник</#if></td>
-                                <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getTypeJobPosition()}<#else>&#x2716;</#if></td>
+                                <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getTypeJobPosition()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getNamePosition()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getDivision().getName()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getGroupName()??>${person.getGroupName()}<#else>&#x2716;</#if></td>

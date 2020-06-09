@@ -26,7 +26,6 @@ create table job_position
 (
     id                bigint identity not null,
     name_position     nvarchar(60)  not null,
-    type_job_position varchar(255) not null,
     primary key (id)
 )
 
@@ -86,6 +85,7 @@ create table subdivision
     id          bigint identity not null,
     name        nvarchar(100) not null,
     division_id bigint,
+    type_job_position varchar(255) not null,
     primary key (id)
 )
 

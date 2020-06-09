@@ -126,7 +126,7 @@
         </div>
 
         <div class="form-group subdivision">
-            <label class="subdivision" for="subdivision" hidden="hidden">Кафедра</label>
+            <label class="subdivision" for="subdivision" hidden="hidden">Кафедра/Подразделение</label>
             <select class="form-control subdivision" name="subdivision" hidden="hidden">
                 <option selected="selected" value=""></option>
             </select>

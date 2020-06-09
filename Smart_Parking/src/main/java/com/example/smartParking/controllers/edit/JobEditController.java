@@ -40,8 +40,8 @@ public class JobEditController {
 
     @PostMapping("job/add")
     public String addJob(JobPosition job, String typeJobPosition1, Model model) {
-        if (typeJobPosition1.equals("ППС")) job.setTypeJobPosition(TypeJobPosition.PPS);
-        if (typeJobPosition1.equals("АУП")) job.setTypeJobPosition(TypeJobPosition.AUP);
+//        if (typeJobPosition1.equals("ППС")) job.setTypeJobPosition(TypeJobPosition.PPS);
+//        if (typeJobPosition1.equals("АУП")) job.setTypeJobPosition(TypeJobPosition.AUP);
         if (dataEditingService.addJob(job, model)) {
             return getJobEdit(model);
         } else return addJob(model);
@@ -61,8 +61,8 @@ public class JobEditController {
             model.addAttribute("message", "Такого института не существует");
             return getJobEdit(model);
         }
-        if (typeJobPosition1.equals("ППС")) changedJob.setTypeJobPosition(TypeJobPosition.PPS);
-        if (typeJobPosition1.equals("АУП")) changedJob.setTypeJobPosition(TypeJobPosition.AUP);
+//        if (typeJobPosition1.equals("ППС")) changedJob.setTypeJobPosition(TypeJobPosition.PPS);
+//        if (typeJobPosition1.equals("АУП")) changedJob.setTypeJobPosition(TypeJobPosition.AUP);
         boolean success = dataEditingService.updateJob(jobId, changedJob, model);
         if (success) {
             return getJobEdit(model);

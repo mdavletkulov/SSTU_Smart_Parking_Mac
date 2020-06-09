@@ -558,7 +558,7 @@ public class DataEditingService {
     public List<String> getTypeJobs() {
         List<String> list = new ArrayList<>();
         List<TypeJobPosition> list1 = new ArrayList<>();
-        list1.addAll(jobPositionRepo.findAllPositionNames());
+        list1.addAll(subdivisionRepo.findAllTypeJobPosition());
         for (TypeJobPosition jobPosition: list1) {
             list.add(jobPosition.getType());
         }
@@ -615,7 +615,7 @@ public class DataEditingService {
                 success = false;
             } else {
                 jobPosition.setNamePosition(jobPositionChange.getNamePosition());
-                jobPosition.setTypeJobPosition(jobPositionChange.getTypeJobPositionEn());
+//                jobPosition.setTypeJobPosition(jobPositionChange.getTypeJobPositionEn());
                 jobPositionRepo.save(jobPosition);
             }
         } else {

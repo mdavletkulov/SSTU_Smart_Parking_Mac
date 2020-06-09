@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -131,11 +130,11 @@ public class ReportService {
             if (subdivision != null && !subdivision.isBlank()) {
                 events = eventRepo.findAllParkingBetweenDatesBySubdivisionEmployee(startDateTime, endDateTime, subdivision);
                 if (violation) events = findOnlyViolation(events);
-            } else if (division != null && !division.isBlank()) {
-                events = eventRepo.findAllParkingBetweenDatesByDivisionEmployee(startDateTime, endDateTime, division);
-                if (violation) events = findOnlyViolation(events);
             } else if (typeJob != null && !typeJob.isBlank()) {
                 events = eventRepo.findAllParkingBetweenDatesByJobType(startDateTime, endDateTime, typeJob);
+                if (violation) events = findOnlyViolation(events);
+            } else if (division != null && !division.isBlank()) {
+                events = eventRepo.findAllParkingBetweenDatesByDivisionEmployee(startDateTime, endDateTime, division);
                 if (violation) events = findOnlyViolation(events);
             } else {
                 events = eventRepo.findAllParkingBetweenDatesEmployee(startDateTime, endDateTime);
@@ -169,8 +168,8 @@ public class ReportService {
     public void addDefaultAttributes(Model model) {
         List<String> list = new ArrayList<>();
         List<TypeJobPosition> list1 = new ArrayList<>();
-        list1.addAll(jobPositionRepo.findAllPositionNames());
-        for (TypeJobPosition jobPosition: list1) {
+        list1.addAll(subdivisionRepo.findAllTypeJobPosition());
+        for (TypeJobPosition jobPosition : list1) {
             list.add(jobPosition.getType());
         }
         model.addAttribute("typesJob", list);

@@ -31,7 +31,7 @@
             <td class="col-sm-4"><a href="/dataEdit/division/" class="btn btn-primary stretched-link ">Редактировать</a></td>
         </tr>
         <tr class="row">
-            <td class="col-sm-8">Кафедры</td>
+            <td class="col-sm-8">Кафедры/Подразделения</td>
             <td class="col-sm-4"><a href="/dataEdit/subdivision/" class="btn btn-primary stretched-link ">Редактировать</a></td>
         </tr>
         <tr class="row">
