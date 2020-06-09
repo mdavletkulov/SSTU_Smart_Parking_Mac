@@ -1,6 +1,5 @@
 package com.example.smartParking.controllers;
 
-import com.example.smartParking.model.domain.Division;
 import com.example.smartParking.model.domain.Event;
 import com.example.smartParking.model.domain.Subdivision;
 import com.example.smartParking.repos.AutomobileRepo;
@@ -18,10 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -158,6 +154,24 @@ public class ReportController {
                 subdivisions.add(subdivision.getName());
             }
         }
+        return subdivisions;
+    }
+
+    @GetMapping(value = "common/subdivision/{division}/{isEmployee}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<String> getSubdivisions1(@PathVariable String division, @PathVariable String isEmployee) {
+        List<String> subdivisions = new ArrayList<>();
+        if (isEmployee.equals("true")) {
+            for (Subdivision subdivision : subdivisionRepo.findByDivision(division)) {
+                subdivisions.add(subdivision.getName());
+            }
+        }
+        else {
+            for (Subdivision subdivision : subdivisionRepo.findByNonEmpDivision(division)) {
+                subdivisions.add(subdivision.getName());
+            }
+        }
+
         return subdivisions;
     }
 

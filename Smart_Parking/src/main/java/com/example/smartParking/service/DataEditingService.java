@@ -157,7 +157,7 @@ public class DataEditingService {
 
             if (personFromDB.isPresent()) {
                 model.addAttribute("messageType", "danger");
-                model.addAttribute("message", "Такой пользователь уже существует");
+                model.addAttribute("message", "Пользователь с таким пропуском уже существует");
                 return false;
             }
         }
@@ -761,6 +761,10 @@ public class DataEditingService {
 
     public List<Subdivision> getSubdivisionsByDivision(String divisionName) {
         return subdivisionRepo.findByDivision(divisionName);
+    }
+
+    public List<Subdivision> getSubdivisionsByDivisionNonEmp(String divisionName) {
+        return subdivisionRepo.findByNonEmpDivision(divisionName);
     }
 
     public List<Subdivision> getAllSubdivisions() {

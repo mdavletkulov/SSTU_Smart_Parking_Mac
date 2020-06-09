@@ -207,6 +207,7 @@
         var courseLabel = $("label.course");
         var jobs = [<#list jobPositions as jobPosition>['${jobPosition.getNamePosition()}', "${jobPosition.getId()}"], </#list>];
         var error = "${(passDateError??)?string('yes', 'no')}";
+        var employee = $("label.employee");
 
         $(document).ready(function () {
 
@@ -215,6 +216,8 @@
             }
 
             $("label.student").click(function () {
+                divisionsSelect.val(divisionsSelect.children("option:first").val());
+                subdivisionSelect.empty();
                 jobSelect.empty();
                 jobSelect.attr("hidden", "hidden");
                 jobLabel.attr("hidden", "hidden");
@@ -227,6 +230,8 @@
             });
 
             $("label.employee").click(function () {
+                divisionsSelect.val(divisionsSelect.children("option:first").val());
+                subdivisionSelect.empty();
                 courseInput.empty();
                 courseInput.attr("hidden", "hidden");
                 courseLabel.attr("hidden", "hidden");
@@ -245,8 +250,9 @@
 
             divisionsSelect.change(function () {
                 if (!isEmpty($(this).children("option:selected"))) {
+                    var isEmployee = employee.hasClass("active");
                     var selectedDivision = $(this).children("option:selected").text();
-                    subdivision(selectedDivision);
+                    subdivision(selectedDivision , isEmployee);
                 } else {
                     subdivisionSelect.empty();
                     subdivisionSelect.attr("hidden", "hidden");
@@ -256,11 +262,11 @@
             });
         });
 
-        function subdivision(selectedDivision) {
+        function subdivision(selectedDivision, isEmployee) {
             $.ajax({
                 type: "GET",
                 contentType: "application/json",
-                url: "/report/common/subdivision/" + selectedDivision,
+                url: "/report/common/subdivision/" + selectedDivision+"/"+isEmployee,
                 dataType: 'json',
                 cache: false,    //This will force requested pages not to be cached by the browser
                 timeout: 600000,

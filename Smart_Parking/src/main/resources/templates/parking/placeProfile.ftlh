@@ -58,7 +58,7 @@
                     <td>${person.getSubdivision().getDivision().getName()}</td>
                 </tr>
                 <tr class="d-flex">
-                    <th scope="row">Кафедра</th>
+                    <th scope="row">Кафедра/Подразделение</th>
                     <td>${person.getSubdivision().getName()}</td>
                 </tr>
             </#if>

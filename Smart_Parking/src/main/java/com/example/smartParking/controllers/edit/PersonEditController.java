@@ -53,7 +53,12 @@ public class PersonEditController {
     public String editPerson(@PathVariable Person person, Model model) {
         model.addAttribute("person", person);
         if (person.getDivision() != null) {
-            model.addAttribute("subdivisions", dataEditingService.getSubdivisionsByDivision(person.getDivision().getName()));
+            if (person.isStudent()) {
+                model.addAttribute("subdivisions", dataEditingService.getSubdivisionsByDivisionNonEmp(person.getDivision().getName()));
+            }
+            else {
+                model.addAttribute("subdivisions", dataEditingService.getSubdivisionsByDivision(person.getDivision().getName()));
+            }
         }
         model.addAttribute("jobPositions", dataEditingService.getAllJobs());
         model.addAttribute("divisions", dataEditingService.getAllDivisions());
