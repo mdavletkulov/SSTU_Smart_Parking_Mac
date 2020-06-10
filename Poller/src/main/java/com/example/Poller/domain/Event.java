@@ -32,6 +32,7 @@ public class Event {
     private Boolean personViolation;
     private Boolean autoViolation;
     private String photoName;
+    private String unknownNum;
 
     public Long getId() {
         return Id;
@@ -171,5 +172,13 @@ public class Event {
 
     public void setPhotoName(String photoName) {
         this.photoName = photoName;
+    }
+
+    public String getUnknownNum() {
+        return unknownNum;
+    }
+
+    public void setUnknownNum(String unknownNum) {
+        this.unknownNum = unknownNum;
     }
 }

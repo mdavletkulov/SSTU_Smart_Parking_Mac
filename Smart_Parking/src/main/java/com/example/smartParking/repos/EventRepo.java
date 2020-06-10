@@ -110,5 +110,12 @@ public interface EventRepo extends CrudRepository<Event, Long> {
             nativeQuery = true)
     List<Event> findAllPersonParkingBetweenDates(Timestamp startDateTime, Timestamp endDateTime, Long personIdL);
 
+    @Query(
+            value = "Select * FROM parking_event LEFT JOIN parking_place a on parking_event.place_id = a.id " +
+                    "LEFT JOIN parking p on a.parking_id = p.id " +
+                    "WHERE start_time >= ?1 and end_time <= ?2 and p.id = ?3 order by end_time DESC",
+            nativeQuery = true)
+    List<Event> findAllParkingEventsBetweenDates(Timestamp startDateTime, Timestamp endDateTime, Long parkingId);
+
 
 }

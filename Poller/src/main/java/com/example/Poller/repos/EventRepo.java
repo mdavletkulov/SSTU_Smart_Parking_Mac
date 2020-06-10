@@ -18,7 +18,7 @@ public interface EventRepo extends CrudRepository<Event, Long> {
 
     @Query(
             value = "Select * FROM parking_event LEFT JOIN parking_place pp on parking_event.place_id = pp.id " +
-                    "WHERE DATEDIFF(minute, start_time, end_time) < 31",
+                    "WHERE DATEDIFF(minute, start_time, end_time) < 16",
             nativeQuery = true)
     List<Event> getErrorEvents();
 

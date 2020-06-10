@@ -89,6 +89,8 @@ public class ParkingService {
         for (ParkingNumberEvent parkingNumberEvent : placeNumbers) {
             if (parkingNumberEvent.getNumbers() != null && parkingNumberEvent.getNumbers().isEmpty()) {
                 processEmptyParking(parkingId, parkingNumberEvent.getPlaceNum());
+                File file = new File(uploadPath + "/images/autos/" + parkingNumberEvent.getFileName());
+                file.delete();
             } else if (parkingNumberEvent.getNumbers() != null) {
                 processAutoEvents(parkingNumberEvent, parkingId, noRegionNums);
             }
@@ -106,7 +108,7 @@ public class ParkingService {
 
     private void processAutoEvents(ParkingNumberEvent parkingNumberEvent, Long parkingId, List<String> noRegionNums) {
         Map<String, Boolean> readNums = new HashMap<>();
-        if (parkingNumberEvent.getPlaceNum().equals(5)) {
+        if (parkingNumberEvent.getPlaceNum().equals(1)) {
             readNums = processNumber(noRegionNums, parkingNumberEvent.getNumbers(), true);
         }
         else {
@@ -165,6 +167,16 @@ public class ParkingService {
         Event event = new Event();
         Optional<Event> event1 = eventRepo.findActiveParkingEventByPlaceNum(parkingId, parkingNumberEvent.getPlaceNum());
         if (event1.isPresent()) {
+            if (event1.get().getUnknownNum() != null && !event1.get().getUnknownNum().isBlank()) {
+                if (!event1.get().getUnknownNum().matches(numFormat)) {
+                    if (parkingNumberEvent.getNumbers().get(0).matches(numFormat)) {
+                        Event event2 = event1.get();
+                        event2.setUnknownNum(parkingNumberEvent.getNumbers().get(0));
+                        eventRepo.save(event2);
+                        return;
+                    }
+                }
+            }
             File file = new File(uploadPath + "/images/autos/" + parkingNumberEvent.getFileName());
             file.delete();
             return;
@@ -178,6 +190,7 @@ public class ParkingService {
             event.setAutoViolation(true);
             event.setPhotoName(parkingNumberEvent.getFileName());
             event.setPlace(place.get());
+            event.setUnknownNum(parkingNumberEvent.getNumbers().get(0));
             eventRepo.save(event);
         }
     }
@@ -301,7 +314,7 @@ public class ParkingService {
                     }
                 }
 
-                if ((minHamming < 3.0 && !isBadPicture) ||  (minHamming < 4.0 && isBadPicture)) {
+                if ((minHamming < 3.0 && !isBadPicture) ||  (minHamming < 2.1 && isBadPicture)) {
                     result.put(dbMatched, true);
                 } else {
                     result.put(finalNeuralNum, false);

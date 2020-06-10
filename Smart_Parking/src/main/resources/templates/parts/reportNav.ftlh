@@ -7,6 +7,9 @@
                 <a class="nav-link report-a text-white bg-dark <#if simple??>active</#if>" href="/report/simple">Общий отчет в промежуток
                     времени</a>
             </li>
+            <li class="nav-item text-white bg-dark">
+                <a class="nav-link report-a text-white bg-dark" href="/report/parking">Отчет по определенным парковкам</a>
+            </li>
             <li class="nav-item report-a text-white bg-dark">
                 <a class=" text-white bg-dark nav-link report-a <#if person??>active</#if>" href="/report/person">Отчет по отдельным водителям</a>
             </li>

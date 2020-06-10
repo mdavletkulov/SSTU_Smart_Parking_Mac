@@ -19,6 +19,8 @@ public class Subdivision {
     @NotBlank(message = "Название кафедры не может быть пустым")
     @Length(max = 100, message = "Название кафедры слишком длинное")
     private String name;
+    @Enumerated(EnumType.STRING)
+    private TypeJobPosition typeJobPosition;
 
     public Long getId() {
         return Id;
@@ -42,5 +44,21 @@ public class Subdivision {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTypeJobPosition() {
+        if (typeJobPosition.equals(TypeJobPosition.AUP))
+            return "АУП";
+        else if (typeJobPosition.equals(TypeJobPosition.PPS))
+            return "ППС";
+        return null;
+    }
+
+    public TypeJobPosition getTypeJobPositionEn() {
+        return typeJobPosition;
+    }
+
+    public void setTypeJobPosition(TypeJobPosition typeJobPosition) {
+        this.typeJobPosition = typeJobPosition;
     }
 }

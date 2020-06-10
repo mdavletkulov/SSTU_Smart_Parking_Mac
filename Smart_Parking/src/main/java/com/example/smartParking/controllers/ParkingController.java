@@ -93,6 +93,7 @@ public class ParkingController {
                     }
                     else if (event.getUnknownNum() != null && !event.getUnknownNum().isBlank()) {
                         updateParking.setNumber(event.getUnknownNum());
+                        updateParking.setModel("\u2716");
                     }
                     else {
                         updateParking.setModel("\u2716");

@@ -1,13 +1,8 @@
 package com.example.smartParking.service;
 
 import com.example.smartParking.model.ReportEntity;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
+import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -18,6 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,24 +38,54 @@ public class ReportCreatorService {
             XWPFDocument docxModel = new XWPFDocument();
 
             XWPFParagraph bodyParagraph = docxModel.createParagraph();
-            bodyParagraph.setAlignment(ParagraphAlignment.LEFT);
+            bodyParagraph.setAlignment(ParagraphAlignment.CENTER);
+            CTSectPr sectPr = docxModel.getDocument().getBody().addNewSectPr();
+            CTPageMar pageMar = sectPr.addNewPgMar();
+            pageMar.setLeft(BigInteger.valueOf(250L));
+            pageMar.setTop(BigInteger.valueOf(1000L));
+            pageMar.setRight(BigInteger.valueOf(250L));
+            pageMar.setBottom(BigInteger.valueOf(1000L));
+            XWPFRun paragraphConfig = bodyParagraph.createRun();
+            paragraphConfig.setFontSize(18);
+            paragraphConfig.setFontFamily("Times New Roman");
+            paragraphConfig.setBold(true);
+            paragraphConfig.setText("Отчет о парковочном пространстве СГТУ им. Ю.А. Гагарина");
+            paragraphConfig.addBreak();
+            XWPFTable table = docxModel.createTable();
+            table.setCellMargins(0, 50, 0, 50);
+            table.setTableAlignment(TableRowAlign.CENTER);
+            table.setWidthType(TableWidthType.DXA);
+            XWPFTableRow tableRow = table.getRow(0);
+            for (int i = 0; i <= 8; i++) {
+                tableRow.createCell();
+            }
+            widthCellsAcrossRow(table, 0, 0, 4000);
+            tableRow.getCell(0).setText("Парковка");
+            widthCellsAcrossRow(table, 0, 1, 100);
+            tableRow.getCell(1).setText("Номер места");
+            widthCellsAcrossRow(table, 0, 2, 100);
+            tableRow.getCell(2).setText("Водитель");
+            widthCellsAcrossRow(table, 0, 3, 100);
+            tableRow.getCell(3).setText("Статус");
+            widthCellsAcrossRow(table, 0, 4, 100);
+            tableRow.getCell(4).setText("Институт");
+            widthCellsAcrossRow(table, 0, 5, 100);
+            tableRow.getCell(5).setText("Номер авто");
+            widthCellsAcrossRow(table, 0, 6, 100);
+            tableRow.getCell(6).setText("Модель авто");
+            widthCellsAcrossRow(table, 0, 7, 100);
+            tableRow.getCell(7).setText("Дата начала");
+            widthCellsAcrossRow(table, 0, 8, 100);
+            tableRow.getCell(8).setText("Дата окончания");
+            widthCellsAcrossRow(table, 0, 9, 100);
+            tableRow.getCell(9).setText("Нарушение");
             int i = 1;
             for (ReportEntity reportEntity : reportEntities) {
-                XWPFRun paragraphConfig = bodyParagraph.createRun();
-                paragraphConfig.setFontSize(16);
-                paragraphConfig.setFontFamily("Times New Roman");
-                paragraphConfig.setBold(true);
-                paragraphConfig.setText("Парковочное событие номер " + i);
+                tableRow = table.createRow();
                 paragraphConfig = bodyParagraph.createRun();
                 paragraphConfig.setFontSize(14);
                 paragraphConfig.setFontFamily("Times New Roman");
-                // HEX цвет без решетки #
-                generateReportText(reportEntity, paragraphConfig, bodyParagraph);
-                paragraphConfig = bodyParagraph.createRun();
-                generateViolationText(reportEntity, paragraphConfig, bodyParagraph);
-                paragraphConfig = bodyParagraph.createRun();
-                paragraphConfig.addBreak();
-                paragraphConfig.addBreak();
+                generateReportText(reportEntity, paragraphConfig, bodyParagraph, table, tableRow, i);
                 i++;
             }
 
@@ -85,7 +111,7 @@ public class ReportCreatorService {
         }
     }
 
-    private void generateReportText(ReportEntity reportEntity, XWPFRun paragraphConfig, XWPFParagraph bodyParagraph) {
+    private void generateReportText(ReportEntity reportEntity, XWPFRun paragraphConfig, XWPFParagraph bodyParagraph, XWPFTable table, XWPFTableRow row, Integer rowNum) {
         String parkingName = reportEntity.getParkingName();
         String placeNum = null;
         if (reportEntity.getPlaceNum() != null) placeNum = reportEntity.getPlaceNum().toString();
@@ -94,28 +120,82 @@ public class ReportCreatorService {
         String startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reportEntity.getStartTime());
         String endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reportEntity.getEndTime());
         String division = reportEntity.getDivision();
-        String subdivision = reportEntity.getSubdivision();
-        String jobPosition = reportEntity.getJobPosition();
-        String group = reportEntity.getGroup();
-        String course = reportEntity.getCourse();
         String autoModel = reportEntity.getAutoModel();
-        if (parkingName != null && !parkingName.isBlank())
-            writeLine("Название парковки: ", parkingName, paragraphConfig, bodyParagraph);
-        if (placeNum != null && !placeNum.isBlank())
-            writeLine("Номер места: ", placeNum, paragraphConfig, bodyParagraph);
-        if (autoNum != null && !autoNum.isBlank())
-            writeLine("Номер автомобиля: ", autoNum, paragraphConfig, bodyParagraph);
-        if (autoModel != null && !autoModel.isBlank())
-            writeLine("Марка автомобиля: ", autoModel, paragraphConfig, bodyParagraph);
-        writeLine("Время начала парковки: ", startTime, paragraphConfig, bodyParagraph);
-        writeLine("Время окончания парковки: ", endTime, paragraphConfig, bodyParagraph);
-        if (personName != null && !personName.isBlank())
-            writeLine("Владелец автомобиля: ", personName, paragraphConfig, bodyParagraph);
-        appendIfNotNull("Институт: ", division, paragraphConfig, bodyParagraph);
-        appendIfNotNull("Кафедра: ", subdivision, paragraphConfig, bodyParagraph);
-        appendIfNotNull("Должность: ", jobPosition, paragraphConfig, bodyParagraph);
-        appendIfNotNull("Группа: ", group, paragraphConfig, bodyParagraph);
-        appendIfNotNull("Курс: ", course, paragraphConfig, bodyParagraph);
+        String state = null;
+        if (personName != null && !personName.isBlank()) {
+            state = reportEntity.getStudent() ? "Студент" : "Сотрудник";
+        }
+        String autoViolation = reportEntity.getAutoViolation();
+        String passViolation = reportEntity.getPassViolation();
+        widthCellsAcrossRow(table, rowNum, 0, 1000);
+        if (parkingName != null && !parkingName.isBlank()) {
+            row.getCell(0).setText(parkingName);
+        } else {
+            row.getCell(0).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 1, 100);
+        if (placeNum != null && !placeNum.isBlank()) {
+            row.getCell(1).setText(placeNum);
+        } else {
+            row.getCell(1).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 2, 100);
+        if (personName != null && !personName.isBlank()) {
+            row.getCell(2).setText(personName);
+        } else {
+            row.getCell(2).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 3, 100);
+        if (state != null && !state.isBlank()) {
+            row.getCell(3).setText(state);
+        } else {
+            row.getCell(3).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 4, 100);
+        if (division != null && !division.isBlank()) {
+            row.getCell(4).setText(division);
+        } else {
+            row.getCell(4).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 5, 100);
+        if (autoNum != null && !autoNum.isBlank()) {
+            row.getCell(5).setText(autoNum);
+        } else {
+            row.getCell(5).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 6, 100);
+        if (autoModel != null && !autoModel.isBlank()) {
+            row.getCell(6).setText(autoModel);
+        } else {
+            row.getCell(6).setText("");
+        }
+
+        widthCellsAcrossRow(table, rowNum, 7, 100);
+        row.getCell(7).setText(startTime);
+        widthCellsAcrossRow(table, rowNum, 8, 100);
+        row.getCell(8).setText(endTime);
+
+        widthCellsAcrossRow(table, rowNum, 9, 100);
+        XWPFTableCell cell = table.getRow(rowNum).getCell(9);
+        cell.removeParagraph(0);
+        XWPFParagraph tempParagraph = cell.addParagraph();
+        tempParagraph.setAlignment(ParagraphAlignment.CENTER);
+        XWPFRun run = tempParagraph.createRun();
+        run.setColor("FF0000");
+        cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+        if (passViolation != null && !passViolation.isBlank()) {
+            run.setText(passViolation);
+        } else if (autoViolation != null && !autoViolation.isBlank()) {
+            run.setText(autoViolation);
+        } else {
+            row.getCell(9).setText("");
+        }
     }
 
     private void writeLine(String name, String value, XWPFRun paragraphConfig, XWPFParagraph bodyParagraph) {
@@ -208,6 +288,21 @@ public class ReportCreatorService {
             return fileToSave.getAbsolutePath();
         }
         return null;
+    }
+
+    private static void widthCellsAcrossRow(XWPFTable table, int rowNum, int colNum, int width) {
+        XWPFTableCell cell = table.getRow(rowNum).getCell(colNum);
+        if (cell.getCTTc().getTcPr() == null)
+            cell.getCTTc().addNewTcPr();
+        if (cell.getCTTc().getTcPr().getTcW() == null)
+            cell.getCTTc().getTcPr().addNewTcW();
+        cell.getCTTc().getTcPr().getTcW().setW(BigInteger.valueOf((long) width));
+        XWPFParagraph tempParagraph = cell.getParagraphs().get(0);
+        tempParagraph.setAlignment(ParagraphAlignment.CENTER);
+        XWPFRun run = tempParagraph.createRun();
+        run.setFontFamily("Times New Roman");
+        run.setFontSize(11);
+        cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
     }
 
 }

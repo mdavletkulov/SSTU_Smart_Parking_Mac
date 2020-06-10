@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,9 +58,14 @@ public class ReportService {
                 reportEntity.setAutoNum(event.getAutomobile().getNumber());
                 reportEntity.setAutoModel(event.getAutomobile().getModel());
             }
+            else if (event.getUnknownNum() != null && !event.getUnknownNum().isBlank()) {
+                reportEntity.setAutoNum(event.getUnknownNum());
+            }
             if (event.getPerson() != null) {
                 person = event.getPerson();
                 reportEntity.setPersonName(person.getFullName());
+                reportEntity.setEmployee(event.getPerson().isEmployee());
+                reportEntity.setStudent(event.getPerson().isStudent());
             }
             if (event.getPlace() != null) {
                 reportEntity.setParkingName(event.getPlace().getParking().getDescription());
@@ -91,7 +97,12 @@ public class ReportService {
 
     public void createReport(List<Event> events, Model model) {
         if (!events.isEmpty()) {
-            List<ReportEntity> reportEntities = createReportEntities(events);
+            List<ReportEntity> unSortReportEntities = createReportEntities(events);
+            List<ReportEntity> reportEntities = unSortReportEntities.stream()
+                    .sorted(Comparator.comparing(ReportEntity::getPersonName,
+                            Comparator.nullsLast(String::compareTo))
+                    .thenComparing(ReportEntity::getStartTime))
+                    .collect(Collectors.toList());
             boolean reportSaved = reportCreatorService.createDocxReport(reportEntities, model);
             if (reportSaved) {
                 model.addAttribute("messageType", "success");
@@ -211,6 +222,12 @@ public class ReportService {
             violationPresent = true;
         }
         return violationPresent;
+    }
+
+    public List<Event> findParkingEvents(String startTime, String endTime, Long parkingId) {
+        Timestamp startDateTime = convertToTimestamp(startTime);
+        Timestamp endDateTime = convertToTimestamp(endTime);
+        return eventRepo.findAllParkingEventsBetweenDates(startDateTime, endDateTime, parkingId);
     }
 
     public List<Event> findSimpleEvents(String startTime, String endTime, String personId) {

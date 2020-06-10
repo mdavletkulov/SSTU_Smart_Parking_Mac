@@ -93,7 +93,7 @@
                             <tr id="${person.getId()}" <#if automobile.getPerson()??><#if automobile.getPerson() == person> class="table-success"</#if></#if>>
                                 <th class="align-middle">${person.getFullName()}</th>
                                 <td class="align-middle"><#if person.isStudent()>Студент</#if> <#if person.isEmployee()>Сотрудник</#if></td>
-                                <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getTypeJobPosition()}<#else>&#x2716;</#if></td>
+                                <td class="align-middle"><#if person.isEmployee() && person.getSubdivision()??>${person.getSubdivision().getTypeJobPosition()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getJobPosition()??>${person.getJobPosition().getNamePosition()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getSubdivision()??>${person.getSubdivision().getDivision().getName()}<#else>&#x2716;</#if></td>
                                 <td class="align-middle"><#if person.getGroupName()??>${person.getGroupName()}<#else>&#x2716;</#if></td>

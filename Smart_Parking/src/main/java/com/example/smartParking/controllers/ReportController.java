@@ -1,11 +1,9 @@
 package com.example.smartParking.controllers;
 
 import com.example.smartParking.model.domain.Event;
+import com.example.smartParking.model.domain.Parking;
 import com.example.smartParking.model.domain.Subdivision;
-import com.example.smartParking.repos.AutomobileRepo;
-import com.example.smartParking.repos.DivisionRepo;
-import com.example.smartParking.repos.PersonRepo;
-import com.example.smartParking.repos.SubdivisionRepo;
+import com.example.smartParking.repos.*;
 import com.example.smartParking.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -49,6 +48,9 @@ public class ReportController {
 
     @Autowired
     AutomobileRepo automobileRepo;
+
+    @Autowired
+    ParkingRepo parkingRepo;
 
     @GetMapping
     public String getReportsPage() {
@@ -87,6 +89,33 @@ public class ReportController {
         model.addAttribute("violation", "yes");
         model.addAttribute("violation_common", "yes");
         return "report/commonReport";
+    }
+
+    @GetMapping("parking")
+    public String getCommonParkingReports(Model model) {
+        model.addAttribute("parkings", parkingRepo.findAllDescriptions());
+        return "report/parkingReport";
+    }
+
+    @PostMapping("parking")
+    public String getCommonParkingReports(@RequestParam String parking,
+                                          @RequestParam String startTime,
+                                          @RequestParam String endTime, Model model) {
+        model.addAttribute("parkings", parkingRepo.findAllDescriptions());
+        Optional<Parking> parkingDB = parkingRepo.findByDescription(parking);
+        if (parkingDB.isPresent()) {
+            if (!reportService.checkDates(startTime, endTime, model)) {
+                return getCommonParkingReports(model);
+            }
+            else {
+                List<Event> events = reportService.findParkingEvents(startTime, endTime, parkingDB.get().getId());
+                reportService.createReport(events, model);
+            }
+        }
+        else {
+            model.addAttribute("message", "Такая парковка не найдена!");
+        }
+        return getCommonParkingReports(model);
     }
 
     @GetMapping("common/student/violation")
@@ -143,13 +172,12 @@ public class ReportController {
         List<String> subdivisions = new ArrayList<>();
         if (typeJob != null && !typeJob.isBlank() && !typeJob.equals("undefined")) {
             String typeJobEn = null;
-            if (typeJob.equals("ППС"))  typeJobEn = "PPS";
-            if (typeJob.equals("АУП"))  typeJobEn = "AUP";
+            if (typeJob.equals("ППС")) typeJobEn = "PPS";
+            if (typeJob.equals("АУП")) typeJobEn = "AUP";
             for (Subdivision subdivision : subdivisionRepo.findByDivisionAndTypeJob(division, typeJobEn)) {
                 subdivisions.add(subdivision.getName());
             }
-        }
-        else {
+        } else {
             for (Subdivision subdivision : subdivisionRepo.findByDivisionAndTypeJob(division, "PPS")) {
                 subdivisions.add(subdivision.getName());
             }
@@ -165,8 +193,7 @@ public class ReportController {
             for (Subdivision subdivision : subdivisionRepo.findByDivision(division)) {
                 subdivisions.add(subdivision.getName());
             }
-        }
-        else {
+        } else {
             for (Subdivision subdivision : subdivisionRepo.findByNonEmpDivision(division)) {
                 subdivisions.add(subdivision.getName());
             }

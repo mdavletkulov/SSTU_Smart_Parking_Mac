@@ -20,6 +20,8 @@ public class ReportEntity {
     private String statusViolation;
     private String autoViolation;
     private String personViolation;
+    private Boolean employee;
+    private Boolean student;
 
     public Integer getPlaceNum() {
         return placeNum;
@@ -147,5 +149,21 @@ public class ReportEntity {
 
     public void setPersonViolation(String personViolation) {
         this.personViolation = personViolation;
+    }
+
+    public Boolean getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Boolean employee) {
+        this.employee = employee;
+    }
+
+    public Boolean getStudent() {
+        return student;
+    }
+
+    public void setStudent(Boolean student) {
+        this.student = student;
     }
 }
