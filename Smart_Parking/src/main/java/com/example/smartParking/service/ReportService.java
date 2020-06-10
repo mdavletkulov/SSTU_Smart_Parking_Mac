@@ -101,7 +101,7 @@ public class ReportService {
             List<ReportEntity> reportEntities = unSortReportEntities.stream()
                     .sorted(Comparator.comparing(ReportEntity::getPersonName,
                             Comparator.nullsLast(String::compareTo))
-                    .thenComparing(ReportEntity::getStartTime))
+                    .thenComparing(ReportEntity::getStartTime, Comparator.reverseOrder()))
                     .collect(Collectors.toList());
             boolean reportSaved = reportCreatorService.createDocxReport(reportEntities, model);
             if (reportSaved) {

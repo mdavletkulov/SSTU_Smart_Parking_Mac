@@ -64,7 +64,7 @@ public class PollerService {
                 ImageIO.write(subImgage, "jpg", new File(uploadPath + "/images/autos/" + resultFileName1));
                 parkingNumberEvents.add(new ParkingNumberEvent(1, parkingService.checkAndProcessImage(resultFileName1), resultFileName1));
 
-                subImgage = originalImage.getSubimage(800, 700, 430, 500);
+                subImgage = originalImage.getSubimage(775, 700, 415, 500);
                 uuidFile = UUID.randomUUID().toString();
                 resultFileName1 = uuidFile + ".jpg";
                 ImageIO.write(subImgage, "jpg", new File(uploadPath + "/images/autos/" + resultFileName1));

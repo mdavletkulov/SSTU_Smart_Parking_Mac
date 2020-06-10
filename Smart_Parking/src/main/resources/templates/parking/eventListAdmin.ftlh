@@ -32,7 +32,7 @@
                 <td class="align-middle" scope="row"><#if event.getPlace()??>${event.getPlace().getPlaceNumber()}<#else>&#x2716;</#if></td>
                 <td class="align-middle" scope="row"><#if event.getPerson()??>${event.getPerson().getFullName()}<#else>&#x2716;</#if></td>
                 <td class="align-middle" scope="row"><#if event.getAutomobile()?? && event.getAutomobile().getModel()?? >${event.getAutomobile().getModel()}<#else>&#x2716;</#if></td>
-                <td class="align-middle" scope="row"><#if event.getAutomobile()??>${event.getAutomobile().getNumber()}<#else>&#x2716;</#if></td>
+                <td class="align-middle" scope="row"><#if event.getAutomobile()??>${event.getAutomobile().getNumber()}<#else><#if event.getUnknownNum()??>${event.getUnknownNum()}<#else>&#x2716;</#if></#if></td>
                 <td class="align-middle" scope="row">${event.getStartDateString()}</td>
                 <td class="align-middle" scope="row"><#if event.getEndTime()??>${event.getEndDateString()}</#if></td>
                 <td class="align-middle" scope="row"><#if event.getPassNumViolation() || event.getAutoViolation() || event.getPersonViolation()>&#x2716;<#else>&#9745;</#if></td>
