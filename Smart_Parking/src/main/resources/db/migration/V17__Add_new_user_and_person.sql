@@ -10,5 +10,4 @@ insert into person(course, employee, first_name, second_name, middle_name, group
                    pass_num, special_status, student, job_position, subdivision, division)
 values (null, 1, N'Ольга', N'Долинина', N'Николаевна', null, DATEADD(month, 6, current_timestamp), 25, 0, 0, (select id from job_position where name_position = N'Директор института'), 16, 4);
 insert into automobile(model, number, color_id, person_id)
-
 values ('Nissan X-Trail', 'H380HP64', 4, (select id from person where second_name = N'Долинина'));

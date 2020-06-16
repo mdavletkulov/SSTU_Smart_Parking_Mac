@@ -1,0 +1,1 @@
+update automobile set number = 'A630BH64' where model = 'Nissan X-Trail';
