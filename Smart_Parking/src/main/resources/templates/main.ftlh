@@ -238,7 +238,7 @@
                     площадке и сэкономит вам огромное количество времени</p>
             </div>
             <div class="col-md-5">
-                <img class="featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto">
+                <img class="featurette-image img-fluid mx-auto" src="/img/mobile.jpg">
             </div>
         </div>
 

@@ -12,3 +12,6 @@ insert into parking_event(end_time, start_time, automobile_id, place_id, status_
  ('2020-06-15 17:33:43.00000', '2020-06-15 8:36:36.00000', null, 8, 0, 0, 0, 0, null, null, 'B518OK164'),
  ('2020-06-15 18:13:22.00000', '2020-06-15 8:48:09.00000', 7, 9, 0, 0, 0, 0, null, null, null),
  ('2020-06-01 15:13:22.00000', '2020-06-01 9:48:09.00000', (select id from automobile where number = 'B008AK164'), 7, 0, 0, 0, 0, null, null, null);
+
+insert into usr (enabled, first_name, middle_name, password, role, second_name, username)
+values (1, N'Максим', N'Антонович', '123', 'ADMIN', N'Емельянов', 'sabbkull@gmail.com');
